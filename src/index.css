@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bwi-dark: #011E16;
+  --color-bwi-green: #123524;
+  --color-bwi-news: #033D2B;
+  --color-bwi-gold: #D9A94A;
+  --color-bwi-yellow: #FBD648;
+  --color-bwi-bg: #FBF6EE;
+  --color-bwi-gray: #E6E6E6;
+}
+
+@font-face {
+  font-family: 'Rage Italic';
+  src: local('Rage Italic');
+}
