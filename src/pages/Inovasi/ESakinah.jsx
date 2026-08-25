@@ -143,14 +143,6 @@ const ESakinah = () => {
                              <label className="block text-sm font-bold text-gray-700 mb-2">Nama Pasangan</label>
                              <input type="text" placeholder="Masukkan nama lengkap pasangan" className="w-full p-3.5 rounded-xl border border-gray-300 focus:outline-none focus:border-bwi-gold bg-gray-50" />
                           </div>
-                          <div>
-                             <label className="block text-sm font-bold text-gray-700 mb-2">NIK Pribadi</label>
-                             <input type="text" placeholder="Masukkan NIK Anda" className="w-full p-3.5 rounded-xl border border-gray-300 focus:outline-none focus:border-bwi-gold bg-gray-50" />
-                          </div>
-                          <div>
-                             <label className="block text-sm font-bold text-gray-700 mb-2">NIK Pasangan</label>
-                             <input type="text" placeholder="Masukkan NIK pasangan" className="w-full p-3.5 rounded-xl border border-gray-300 focus:outline-none focus:border-bwi-gold bg-gray-50" />
-                          </div>
                        </div>
                     </div>
 

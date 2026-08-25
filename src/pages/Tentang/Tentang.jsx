@@ -1,9 +1,22 @@
 import React from 'react';
+import { Tree, TreeNode } from 'react-organizational-chart';
 import batikPattern from '../../assets/images/batik.png';
 import kantorCamatBg from '../../assets/images/kantor-camat.png';
 import kantorCamatDulu from '../../assets/images/kantor-camat-dulu.png';
 import logoBanyuwangi from '../../assets/images/logo-banyuwangi.png';
 import { FaUsers, FaHome, FaStore, FaMap, FaSitemap, FaHandsHelping, FaBuilding } from 'react-icons/fa';
+
+const PegawaiCard = ({ nama, jabatan, img, isPimpinan }) => (
+  <div className={`inline-flex flex-col items-center p-4 rounded-2xl shadow-md border-t-4 transition-transform hover:-translate-y-1 bg-white mx-2 w-48 md:w-56 ${isPimpinan ? 'border-bwi-gold shadow-lg' : 'border-[#107058]'}`}>
+    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-gray-100 shadow-inner mb-3">
+      <img src={img} alt={nama} className="w-full h-full object-cover object-top" />
+    </div>
+    <h4 className="font-bold text-bwi-dark text-xs md:text-sm text-center leading-tight mb-1">{nama}</h4>
+    <p className={`text-[10px] md:text-xs font-bold uppercase tracking-wider text-center ${isPimpinan ? 'text-bwi-gold' : 'text-[#107058]'}`}>
+      {jabatan}
+    </p>
+  </div>
+);
 
 const Tentang = () => {
   return (
@@ -112,10 +125,62 @@ const Tentang = () => {
         <section>
           <div className="flex items-center gap-4 mb-8">
             <div className="w-10 h-10 bg-bwi-dark text-white rounded flex items-center justify-center font-bold text-xl">3</div>
-            <h3 className="text-2xl font-bold text-bwi-dark uppercase tracking-wide">STRUKTURAL ORGANISASI</h3>
+            <h3 className="text-2xl font-bold text-bwi-dark uppercase tracking-wide">STRUKTUR ORGANISASI</h3>
           </div>
-          <div className="w-full bg-white p-10 rounded-[2rem] shadow-sm border border-gray-100 flex justify-center">
-             <img src="https://images.unsplash.com/photo-1542744094-24638ea89614?q=80&w=1000&auto=format&fit=crop" alt="Struktur Organisasi" className="max-w-full h-auto rounded-lg opacity-80" />
+          <div className="w-full bg-white p-10 rounded-[2rem] shadow-sm border border-gray-100 overflow-x-auto cursor-grab active:cursor-grabbing">
+             <div className="min-w-[800px] flex justify-center pb-10">
+                <Tree
+                  lineWidth={'2px'}
+                  lineColor={'#cbd5e1'}
+                  lineBorderRadius={'10px'}
+                  label={
+                    <PegawaiCard 
+                      nama="Andik Basuki, S.AB., M.Si." 
+                      jabatan="Camat Banyuwangi" 
+                      img="https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=200&auto=format&fit=crop" 
+                      isPimpinan={true} 
+                    />
+                  }
+                >
+                  <TreeNode 
+                    label={
+                      <PegawaiCard 
+                        nama="Budi Santoso, S.STP." 
+                        jabatan="Sekretaris Camat" 
+                        img="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200&auto=format&fit=crop" 
+                      />
+                    }
+                  >
+                    <TreeNode 
+                      label={
+                        <PegawaiCard 
+                          nama="Dra. Siti Aminah" 
+                          jabatan="Kasi Pemerintahan" 
+                          img="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200&auto=format&fit=crop" 
+                        />
+                      }
+                    />
+                    <TreeNode 
+                      label={
+                        <PegawaiCard 
+                          nama="Hendra Wijaya, S.E." 
+                          jabatan="Kasi PMK" 
+                          img="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop" 
+                        />
+                      }
+                    />
+                    <TreeNode 
+                      label={
+                        <PegawaiCard 
+                          nama="Rina Susanti, S.H." 
+                          jabatan="Kasubag Umum" 
+                          img="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=200&auto=format&fit=crop" 
+                        />
+                      }
+                    />
+                  </TreeNode>
+                </Tree>
+             </div>
           </div>
         </section>
 
