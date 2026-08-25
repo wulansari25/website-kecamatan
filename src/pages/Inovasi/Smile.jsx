@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { FaVideo, FaExternalLinkAlt, FaTimes } from 'react-icons/fa';
+import React from 'react';
+import { FaExternalLinkAlt, FaMobileAlt, FaFileAlt, FaGraduationCap, FaUsers } from 'react-icons/fa';
 import batikPattern from '../../assets/images/batik.png';
-import logoSmile from '../../assets/images/logo-smile.png';
+import imgSmileDeskripsi from '../../assets/images/smile.png';
+import { Link } from 'react-router-dom';
 
 const Smile = () => {
-  const [showVideo, setShowVideo] = useState(false);
-
   return (
     <div className="bg-bwi-bg font-sans min-h-screen relative overflow-hidden pb-20">
       <div className="absolute top-20 left-0 w-80 h-96 opacity-10 bg-no-repeat bg-contain pointer-events-none" style={{ backgroundImage: `url(${batikPattern})` }}></div>
@@ -18,12 +17,9 @@ const Smile = () => {
            <div className="absolute inset-0 bg-gradient-to-r from-[#011E16] via-[#011E16]/80 to-transparent flex flex-col justify-center px-10 lg:px-20">
               <h1 className="text-5xl lg:text-7xl font-bold text-bwi-gold mb-2 tracking-wider">SMILE</h1>
               <p className="text-white text-lg lg:text-xl font-medium tracking-widest mb-6">Sumberrejo Mobile Integrated, Literated And Educated</p>
-              <p className="text-gray-300 max-w-lg text-sm lg:text-base leading-relaxed mb-8">
+              <p className="text-gray-300 max-w-lg text-sm lg:text-base leading-relaxed">
                 Portal digital yang mengintegrasi layanan, informasi, edukasi dan akses publik Kecamatan Banyuwangi dalam satu platform.
               </p>
-              <button onClick={() => setShowVideo(true)} className="bg-white text-bwi-dark px-6 py-3 rounded-xl font-bold flex items-center gap-3 w-max hover:bg-gray-100 transition-colors shadow-lg">
-                <FaVideo className="text-lg" /> Lihat Panduan
-              </button>
            </div>
         </div>
 
@@ -58,7 +54,7 @@ const Smile = () => {
               <div className="p-6 flex flex-col flex-grow text-center">
                  <h3 className="font-bold text-lg text-orange-600 mb-2">TENTANG SUMBERREJO</h3>
                  <p className="text-xs text-gray-500 mb-6 flex-grow">Kenali lebih dekat profil, potensi, sejarah dan perkembangan Kelurahan Sumberrejo.</p>
-                 <button onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })} className="bg-orange-500 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-opacity-90">Selengkapnya ↓</button>
+                 <Link to="/inovasi/smile/sumberrejo" className="bg-orange-500 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-opacity-90 flex justify-center items-center">Selengkapnya <span className="ml-2">→</span></Link>
               </div>
            </div>
 
@@ -66,44 +62,52 @@ const Smile = () => {
               <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=400&auto=format&fit=crop" alt="Layanan Edukasi" className="h-40 w-full object-cover" />
               <div className="p-6 flex flex-col flex-grow text-center">
                  <h3 className="font-bold text-lg text-purple-600 mb-2">LAYANAN EDUKASI</h3>
-                 <p className="text-xs text-gray-500 mb-6 flex-grow">Akses materi edukasi, panduan, video tutorial dan informasi edukatif lainnya.</p>
-                 <button onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })} className="bg-purple-600 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-opacity-90">Selengkapnya ↓</button>
+                 <p className="text-xs text-gray-500 mb-6 flex-grow">Informasi lengkap mengenai persyaratan, waktu penyelesaian, dan mekanisme pelayanan publik di Kecamatan Banyuwangi.</p>
+                 <Link to="/inovasi/smile/edukasi" className="bg-purple-600 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-opacity-90 flex justify-center items-center">Selengkapnya <span className="ml-2">→</span></Link>
               </div>
            </div>
         </div>
 
-        <div className="bg-white rounded-[3rem] p-10 lg:p-16 shadow-lg border border-gray-100 flex flex-col lg:flex-row items-center gap-12">
+        <div className="bg-white rounded-[3rem] p-10 lg:p-16 shadow-lg border border-gray-100 flex flex-col lg:flex-row items-center gap-16">
            <div className="w-full lg:w-1/2">
               <h3 className="text-3xl font-bold text-bwi-dark mb-6">TENTANG SMILE</h3>
-              <p className="text-gray-600 text-lg leading-relaxed mb-8">
+              <p className="text-gray-600 text-lg leading-relaxed mb-10 text-justify">
                 SMILE (Sumberrejo Mobile Integrated, Literated and Educated) merupakan inovasi digital Kecamatan Banyuwangi yang dirancang untuk memudahkan masyarakat mendapatkan layanan, informasi, dan edukasi secara cepat, terintegrasi, dan terpercaya.
               </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                 <div><div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2 text-xl text-bwi-dark">🧩</div><p className="text-xs font-bold text-bwi-dark">Terintegrasi</p></div>
-                 <div><div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2 text-xl text-bwi-dark">ℹ️</div><p className="text-xs font-bold text-bwi-dark">Informatif</p></div>
-                 <div><div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2 text-xl text-bwi-dark">🎓</div><p className="text-xs font-bold text-bwi-dark">Edukatif</p></div>
-                 <div><div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2 text-xl text-bwi-dark">📱</div><p className="text-xs font-bold text-bwi-dark">Mudah Diakses</p></div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-1 text-center">
+                 <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mb-4 text-2xl text-purple-600 shadow-sm border border-purple-100">
+                       <FaUsers />
+                    </div>
+                    <p className="text-sm font-bold text-bwi-dark">Terintegrasi</p>
+                 </div>
+                 <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4 text-2xl text-blue-600 shadow-sm border border-blue-100">
+                       <FaFileAlt />
+                    </div>
+                    <p className="text-sm font-bold text-bwi-dark">Informatif</p>
+                 </div>
+                 <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mb-4 text-2xl text-emerald-700 shadow-sm border border-emerald-100">
+                       <FaGraduationCap />
+                    </div>
+                    <p className="text-sm font-bold text-bwi-dark">Edukatif</p>
+                 </div>
+                 <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4 text-2xl text-green-600 shadow-sm border border-green-100">
+                       <FaMobileAlt />
+                    </div>
+                    <p className="text-sm font-bold text-bwi-dark">Mudah Diakses</p>
+                 </div>
               </div>
            </div>
-           <div className="w-full lg:w-1/2 flex justify-center">
-              <img src={logoSmile} alt="Logo SMILE Besar" className="w-64 h-64 object-contain drop-shadow-xl" />
+           
+           <div className="w-full lg:w-1/2 flex justify-center lg:justify-end">
+              <img src={imgSmileDeskripsi} alt="Ilustrasi Konsep SMILE" className="w-full max-w-lg object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500" />
            </div>
         </div>
       </div>
-
-      {showVideo && (
-        <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-4xl overflow-hidden relative">
-            <button onClick={() => setShowVideo(false)} className="absolute top-4 right-4 bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center z-10 hover:bg-red-600"><FaTimes /></button>
-            <div className="p-6 border-b border-gray-100">
-               <h3 className="font-bold text-xl text-bwi-dark">Video Tutorial Panduan SMILE</h3>
-            </div>
-            <div className="aspect-video bg-black w-full">
-               <video src="https://www.w3schools.com/html/mov_bbb.mp4" className="w-full h-full" autoPlay controls></video>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
