@@ -88,8 +88,8 @@ const Footer = () => {
            <div className="xl:col-span-1">
               <h4 className="text-bwi-gold font-bold text-sm tracking-widest mb-6 uppercase">KONTAK</h4>
               <ul className="text-gray-300 text-sm space-y-5">
-                <li className="flex items-start gap-3"><FaPhoneAlt className="text-bwi-gold mt-1 shrink-0" /> <span className="cursor-default">(0133) 1234567</span></li>
-                <li className="flex items-start gap-3"><FaEnvelope className="text-bwi-gold mt-1 shrink-0 break-all" /> <span className="cursor-default">camatbanyuwangi@gmail.com</span></li>
+                <li className="flex items-start gap-3"><FaPhoneAlt className="text-bwi-gold mt-1 shrink-0" /> <span className="cursor-default">(0333) 424232</span></li>
+                <li className="flex items-start gap-3"><FaEnvelope className="text-bwi-gold mt-1 shrink-0 break-all" /> <span className="cursor-default">pelayanan@kecamatanbanyuwangi.com</span></li>
                 <li className="flex items-start gap-3"><FaClock className="text-bwi-gold mt-1 shrink-0" /> <div className="cursor-default">Senin-Jumat<br/>08.00 - 16.00 WIB</div></li>
               </ul>
            </div>
@@ -100,9 +100,10 @@ const Footer = () => {
         <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
            <p>© 2026 Kantor Camat Banyuwangi. All Rights Reserved.</p>
            <div className="flex gap-8 mt-4 md:mt-0">
-              <span className="cursor-default hover:text-white transition-colors">Sitemap</span>
+              <span className="cursor-default hover:text-white transition-colors">banyuwangikab.go.id</span>
               <span className="cursor-default hover:text-white transition-colors">Kebijakan Privasi</span>
-              <span className="cursor-default hover:text-white transition-colors">Aksesibilitas</span>
+              <span className="cursor-default hover:text-white transition-colors">www.lapor.go.id</span>
+              
            </div>
         </div>
       </div>

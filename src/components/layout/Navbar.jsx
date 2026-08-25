@@ -1,3 +1,4 @@
+// src/components/Navbar/Navbar.jsx
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaInstagram, FaYoutube, FaWhatsapp } from 'react-icons/fa';
@@ -23,7 +24,7 @@ const Navbar = () => {
             <div className="flex items-center gap-4 text-sm border-l border-gray-500/50 pl-4">
               <a href="https://www.instagram.com/kecamatan.banyuwangi?igsh=enoxYm9jejV0amRp" target="_blank" rel="noopener noreferrer" className="hover:text-bwi-gold transition-colors"><FaInstagram /></a>
               <a href="https://www.youtube.com/@kecamatanbanyuwangi" target="_blank" rel="noopener noreferrer" className="hover:text-bwi-gold transition-colors"><FaYoutube /></a>
-              <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" className="hover:text-bwi-gold transition-colors"><FaWhatsapp /></a>
+              <a href="https://wa.me/6287865500022" target="_blank" rel="noopener noreferrer" className="hover:text-bwi-gold transition-colors"><FaWhatsapp /></a>
             </div>
           </div>
         </div>
@@ -52,7 +53,7 @@ const Navbar = () => {
             </div>
           </div>
           <Link to="/berita" className="hover:text-bwi-gold transition-colors">Informasi</Link>
-          <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" className="hover:text-bwi-gold transition-colors">Kontak Kami</a>
+          <a href="https://wa.me/6287865500022" target="_blank" rel="noopener noreferrer" className="hover:text-bwi-gold transition-colors">Kontak Kami</a>
         </nav>
       </div>
     </header>

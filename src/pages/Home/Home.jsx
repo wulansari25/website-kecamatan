@@ -7,12 +7,22 @@ import logoSmile from '../../assets/images/logo-smile.png';
 import logoKiss from '../../assets/images/logo-kiss.png';
 import logoEsakinah from '../../assets/images/logo-esakinah.png';
 import profilVideo from '../../assets/videos/selamat-datang.mp4';
+import imgKelereng from '../../assets/images/lomba-kelereng.JPG';
+import imgKeluarga from '../../assets/images/keluarga.jpeg';
+import imgTenis from '../../assets/images/lomba-tenis.jpeg';
+import imgCamat from '../../assets/images/bapak-camat.JPG';
+import imgKelereng2 from '../../assets/images/kelereng2.JPG';
+import imgCamatLurah from '../../assets/images/camat-lurah.jpeg';
+
 
 const Home = () => {
   const sliderImages = [
-    "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=800&auto=format&fit=crop"
+    imgKelereng,
+    imgKeluarga,
+    imgTenis,
+    imgCamat,
+    imgKelereng2,
+    imgCamatLurah
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -101,7 +111,7 @@ const Home = () => {
 
           <div className="w-full md:w-1/2 flex items-center gap-4">
             <button onClick={prevSlide} className="text-bwi-gold text-4xl font-light hover:text-bwi-dark transition-colors cursor-pointer p-2">❮</button>
-            <div className="w-full h-[450px] lg:h-[500px] rounded-[2.5rem] shadow-2xl overflow-hidden relative group">
+            <div className="w-full h-[300px] lg:h-[350px] rounded-[2.5rem] shadow-2xl overflow-hidden relative group">
                {sliderImages.map((img, index) => (
                  <img 
                    key={index}
@@ -163,7 +173,7 @@ const Home = () => {
                   <div className="flex items-start">
                     <span className="text-7xl text-bwi-gold font-serif leading-none mr-4 mt-2">“</span>
                     <p className="text-gray-800 text-xl lg:text-2xl font-medium mb-8 leading-relaxed">
-                        Bersama masyarakat, kami menghadirkan pelayanan yang berkualitas untuk mewujudkan Kecamatan Banyuwangi yang maju dan sejahtera.
+                       Bersama masyarakat, kami menghadirkan pelayanan yang berkualitas untuk mewujudkan Kecamatan Banyuwangi yang maju dan sejahtera.
                     </p>
                   </div>
                   <h4 className="font-bold text-2xl text-bwi-dark">Andik Basuki, S.AB., M.Si.</h4>
