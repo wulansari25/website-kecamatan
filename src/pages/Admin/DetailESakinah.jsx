@@ -21,7 +21,6 @@ const DetailESakinah = () => {
             <tbody>
               <tr className="border-b border-gray-200/50"><td className="py-5 w-1/3 text-gray-800">Nama</td><td className="py-5 font-bold text-gray-900">: Muhammad</td></tr>
               <tr className="border-b border-gray-200/50"><td className="py-5 text-gray-800">Nama Pasangan</td><td className="py-5 font-bold text-gray-900">: Kurniawati</td></tr>
-              <tr className="border-b border-gray-200/50"><td className="py-5 text-gray-800">NIK</td><td className="py-5 font-bold text-gray-900">: 362358302101</td></tr>
               <tr className="border-b border-gray-200/50"><td className="py-5 text-gray-800">No WhatsApp</td><td className="py-5 font-bold text-gray-900">: 085899966146</td></tr>
               <tr className="border-b border-gray-200/50"><td className="py-5 text-gray-800">Tanggal Pengajuan</td><td className="py-5 font-bold text-gray-900">: 22 Agustus 2026</td></tr>
               <tr className="border-b border-gray-200/50">

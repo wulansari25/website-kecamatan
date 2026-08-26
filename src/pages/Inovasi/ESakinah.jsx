@@ -150,7 +150,7 @@ const ESakinah = () => {
                        <h4 className="font-bold text-green-800 text-lg mb-4">B. Dokumen Identitas</h4>
                        <div className="space-y-4">
                           {[
-                            "Foto / Scan KTP Pribadi", "Foto / Scan Akte Kelahiran", "Foto / Scan KTP Wali Nikah", 
+                            "Foto / Scan KTP Pribadi","Foto / Scan KTP Pasangan","Foto / Scan Akte Kelahiran Pasangan", "Foto / Scan Akte Kelahiran", "Foto / Scan KTP Wali Nikah", 
                             "Foto / Scan KK Wali Nikah", "Foto / Scan KTP 2 Orang Saksi"
                           ].map((doc, idx) => (
                             <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
