@@ -14,7 +14,6 @@ const EditBerita = () => {
 
       <div className="flex flex-col lg:flex-row gap-8">
         
-        {/* KOLOM KIRI (Form Utama) */}
         <div className="flex-1 space-y-6">
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-6">
             
@@ -41,7 +40,6 @@ const EditBerita = () => {
               </div>
             </div>
 
-            {/* TAMBAHAN BARU: Waktu dan Lokasi (Sinkron dengan Modal Frontend) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100">
               <div>
                 <label className="block text-sm font-bold text-orange-600 mb-2">Waktu (Jam)</label>
@@ -71,7 +69,6 @@ const EditBerita = () => {
           </div>
         </div>
 
-        {/* KOLOM KANAN (Sidebar Form) */}
         <div className="w-full lg:w-80 space-y-6">
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <label className="block text-sm font-bold text-[#107058] mb-3">Foto / Thumbnail</label>

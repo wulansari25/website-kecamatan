@@ -14,20 +14,17 @@ const TambahBerita = () => {
 
       <div className="flex flex-col lg:flex-row gap-8">
         
-        {/* KOLOM KIRI (Form Utama) */}
         <div className="flex-1 space-y-6">
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-6">
             
             <div>
               <label className="block text-sm font-bold text-[#107058] mb-2">Judul Publikasi</label>
-              {/* Perbaikan 1: Menggunakan placeholder agar kosong */}
               <input type="text" placeholder="Masukkan judul berita atau agenda..." className="w-full border border-gray-200 rounded-lg p-3 bg-gray-50 focus:outline-none focus:border-[#107058] shadow-sm font-semibold text-gray-800" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-bold text-[#107058] mb-2">Jenis / Kategori</label>
-                {/* Perbaikan 4: Menambahkan opsi Agenda Terdekat */}
                 <select className="w-full border border-gray-200 rounded-lg p-3 bg-gray-50 focus:outline-none focus:border-[#107058] shadow-sm text-gray-700">
                   <option value="">-- Pilih Kategori --</option>
                   <option value="Kegiatan">Kegiatan (Berita)</option>
@@ -44,7 +41,6 @@ const TambahBerita = () => {
               </div>
             </div>
 
-            {/* Perbaikan 2 & 3: Waktu dan Lokasi (Teks Bebas) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100">
               <div>
                 <label className="block text-sm font-bold text-orange-600 mb-2">Waktu (Jam)</label>
@@ -74,11 +70,9 @@ const TambahBerita = () => {
           </div>
         </div>
 
-        {/* KOLOM KANAN (Sidebar Form) */}
         <div className="w-full lg:w-80 space-y-6">
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <label className="block text-sm font-bold text-[#107058] mb-3">Foto / Thumbnail</label>
-            {/* Perbaikan 5: Mengosongkan Foto Dummy menjadi Tombol Upload */}
             <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center py-10 mb-4 hover:bg-gray-100 transition-colors cursor-pointer">
               <FaImage className="text-4xl text-gray-300 mb-2" />
               <p className="text-xs text-gray-500 font-medium">Klik untuk upload foto</p>
