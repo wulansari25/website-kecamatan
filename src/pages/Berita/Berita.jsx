@@ -14,11 +14,15 @@ const Berita = () => {
   const [visibleNewsCount, setVisibleNewsCount] = useState(5);
   const [visibleAgendaCount, setVisibleAgendaCount] = useState(3);
 
+  const [newsData, setNewsData] = useState([]);
+  const [agendaData, setAgendaData] = useState([]);
+
   const categories = ['Semua', 'Kegiatan', 'Pengumuman', 'Pelayanan', 'Budaya', 'UMKM'];
 
-  const newsData = [
+  // Static Agenda Terdekat (Fallback data)
+  const dummyAgendas = [
     {
-      id: 6,
+      id: 'agenda-1',
       category: 'Pengumuman',
       title: "Jadwal Pelayanan Perekaman e-KTP Keliling Kecamatan",
       date: "24 Juli 2026",
@@ -33,7 +37,7 @@ const Berita = () => {
       eventLocation: "Balai Kelurahan Kepatihan & Tamanbaru"
     },
     {
-      id: 5,
+      id: 'agenda-2',
       category: 'Kegiatan',
       title: "Musrenbang Kecamatan Banyuwangi Tahun 2026 Resmi Digelar",
       date: "22 Juli 2026",
@@ -42,13 +46,13 @@ const Berita = () => {
       author: "Admin",
       img: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=400&auto=format&fit=crop",
       shortDesc: "Musrenbang tahun 2026 membahas rencana pembangunan prioritas yang akan dilaksanakan di wilayah Kecamatan Banyuwangi.",
-      fullDesc: "Musyawarah Perencanaan Pembangunan (Musrenbang) tingkat Kecamatan Banyuwangi tahun 2026 telah resmi digelar. Acara ini dihadiri oleh berbagai elemen masyarakat, perwakilan kelurahan, tokoh agama, serta jajaran pejabat daerah. Fokus utama dari Musrenbang kali ini adalah peningkatan infrastruktur pelayanan publik, pemberdayaan UMKM lokal, serta integrasi layanan digital.",
+      fullDesc: "Musyawarah Perencanaan Pembangunan (Musrenbang) tingkat Kecamatan Banyuwangi tahun 2026 telah resmi digelar.",
       eventDate: "22 Juli 2026",
       eventTime: "09.00 - 13.00 WIB",
       eventLocation: "Aula Kecamatan Banyuwangi"
     },
     {
-      id: 4,
+      id: 'agenda-3',
       category: 'Pengumuman',
       title: "Pembagian Bibit Tanaman Produktif untuk Warga",
       date: "23 Juli 2026",
@@ -57,57 +61,54 @@ const Berita = () => {
       author: "Admin",
       img: "https://images.unsplash.com/photo-1622383563227-04401ab4e5ea?q=80&w=400&auto=format&fit=crop",
       shortDesc: "Program penghijauan lingkungan, warga dapat mengambil bibit gratis di kantor kelurahan sesuai jadwal.",
-      fullDesc: "Sebagai bagian dari inisiatif 'Banyuwangi Hijau', ribuan bibit tanaman produktif dan peneduh dibagikan secara gratis kepada warga. Setiap Kepala Keluarga berhak mendapatkan hingga 3 bibit tanaman yang bisa diambil di kantor kelurahan masing-masing. Harap membawa KTP asli saat pengambilan.",
+      fullDesc: "Sebagai bagian dari inisiatif 'Banyuwangi Hijau', ribuan bibit tanaman produktif dan peneduh dibagikan secara gratis kepada warga.",
       eventDate: "30 Juli 2026",
       eventTime: "09.00 - Selesai",
       eventLocation: "Halaman Pendopo Kecamatan Banyuwangi"
-    },
-    {
-      id: 3,
-      category: 'Pelayanan',
-      title: "Kunjungan Studi Tiru dari Kecamatan Lain",
-      date: "20 Juli 2026",
-      month: "JUL",
-      day: "20",
-      author: "Admin",
-      img: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=400&auto=format&fit=crop",
-      shortDesc: "Kecamatan Banyuwangi menjadi percontohan inovasi pelayanan publik se-Jawa Timur.",
-      fullDesc: "Berkat kesuksesan program SMILE dan E-Sakinah, Kantor Camat Banyuwangi menerima kunjungan studi tiru dari berbagai kecamatan di Jawa Timur. Mereka mempelajari bagaimana sistem digitalisasi desa bisa diterapkan secara efektif tanpa menghilangkan sentuhan pelayanan humanis.",
-      eventDate: "20 Juli 2026",
-      eventTime: "10.00 - 12.00 WIB",
-      eventLocation: "Ruang Rapat Utama Kecamatan"
-    },
-    {
-      id: 2,
-      category: 'Budaya',
-      title: "Festival Budaya Banyuwangi 2026",
-      date: "15 Juli 2026",
-      month: "JUL",
-      day: "15",
-      author: "Admin",
-      img: "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?q=80&w=400&auto=format&fit=crop",
-      shortDesc: "Parade seni dan budaya memeriahkan peringatan hari jadi daerah tahun ini.",
-      fullDesc: "Festival budaya tahunan kembali digelar dengan meriah. Beragam kesenian tradisional seperti tari Gandrung, jaranan, dan parade kostum etnik memukau ribuan warga dan wisatawan yang memadati jalanan utama Kecamatan Banyuwangi.",
-      eventDate: "10 Agustus 2026",
-      eventTime: "15.00 - 22.00 WIB",
-      eventLocation: "Taman Blambangan Banyuwangi"
-    },
-    {
-      id: 1,
-      category: 'UMKM',
-      title: "Pelatihan Digital Marketing bagi Pelaku UMKM",
-      date: "10 Juli 2026",
-      month: "JUL",
-      day: "10",
-      author: "Admin",
-      img: "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=400&auto=format&fit=crop",
-      shortDesc: "Peningkatan kapasitas UMKM agar mampu bersaing di pasar digital dan e-commerce.",
-      fullDesc: "Pemerintah Kecamatan memfasilitasi puluhan pelaku UMKM untuk mengikuti pelatihan pemasaran digital. Materi yang diajarkan meliputi teknik foto produk, copywriting, hingga manajemen media sosial dan e-commerce.",
-      eventDate: "12 Agustus 2026",
-      eventTime: "08.00 - 15.00 WIB",
-      eventLocation: "Balai Pelatihan Kerja Kecamatan"
     }
   ];
+
+  React.useEffect(() => {
+    fetch('http://localhost:5000/api/berita')
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.status === 'success' && Array.isArray(json.data)) {
+          const formatted = json.data.map((item) => {
+            const dateObj = new Date(item.tanggal);
+            const dateStr = !isNaN(dateObj.getTime())
+              ? dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+              : item.tanggal;
+
+            return {
+              id: item.id,
+              category: item.kategori || 'Kegiatan',
+              title: item.judul,
+              date: dateStr,
+              author: item.sumber || 'Admin',
+              img: item.gambar || 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=1000&auto=format&fit=crop',
+              shortDesc: item.deskripsi,
+              fullDesc: item.deskripsi,
+              link_asli: item.link_asli
+            };
+          });
+          setNewsData(formatted);
+        }
+      })
+      .catch((err) => {
+        console.error('Error fetching berita:', err);
+      });
+
+    fetch('http://localhost:5000/api/agenda')
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.status === 'success' && Array.isArray(json.data)) {
+          setAgendaData(json.data);
+        }
+      })
+      .catch((err) => {
+        console.error('Error fetching agenda:', err);
+      });
+  }, []);
 
   let processedNews = activeCategory === 'Semua' 
     ? newsData 
@@ -120,7 +121,7 @@ const Berita = () => {
     );
   }
 
-  processedNews = processedNews.sort((a, b) => {
+  processedNews = [...processedNews].sort((a, b) => {
     if (sortOrder === 'newest') return b.id - a.id;
     return a.id - b.id;
   });
@@ -128,7 +129,7 @@ const Berita = () => {
   const mainNews = processedNews.length > 0 ? processedNews[0] : null;
   const gridNews = processedNews.length > 1 ? processedNews.slice(1, visibleNewsCount) : [];
 
-  const allAgendas = newsData.filter(news => news.eventDate).sort((a, b) => b.id - a.id);
+  const allAgendas = agendaData.length > 0 ? agendaData : dummyAgendas;
   const visibleAgendas = allAgendas.slice(0, visibleAgendaCount);
 
   const handleLoadMore = () => {
@@ -283,18 +284,25 @@ const Berita = () => {
                  
                  {visibleAgendas.length > 0 ? (
                    <div className="space-y-6">
-                      {visibleAgendas.map((item) => (
-                        <div key={item.id} onClick={() => setSelectedNews(item)} className="flex gap-5 items-start cursor-pointer group bg-white p-4 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
-                           <div className="bg-gray-50 border border-gray-100 text-bwi-dark w-14 h-16 rounded-xl flex flex-col items-center justify-center font-bold shrink-0 shadow-sm group-hover:bg-bwi-dark group-hover:text-white transition-colors">
-                              <span className="text-xl leading-none">{item.day}</span>
-                              <span className="text-[10px] mt-1 tracking-widest">{item.month}</span>
+                      {visibleAgendas.map((item) => {
+                         const dayVal = item.day || (item.tanggal_tampil ? item.tanggal_tampil.split(' ')[0] : '1');
+                         const monthVal = item.month || (item.tanggal_tampil ? item.tanggal_tampil.split(' ')[1] : 'AGENDA');
+                         const titleVal = item.title || item.judul;
+                         const timeVal = item.eventTime || item.waktu;
+
+                         return (
+                           <div key={item.id} onClick={() => setSelectedNews(item)} className="flex gap-5 items-start cursor-pointer group bg-white p-4 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
+                              <div className="bg-gray-50 border border-gray-100 text-bwi-dark w-14 h-16 rounded-xl flex flex-col items-center justify-center font-bold shrink-0 shadow-sm group-hover:bg-bwi-dark group-hover:text-white transition-colors">
+                                 <span className="text-xl leading-none">{dayVal}</span>
+                                 <span className="text-[10px] mt-1 tracking-widest">{monthVal}</span>
+                              </div>
+                              <div>
+                                 <h5 className="font-bold text-sm text-gray-800 leading-snug group-hover:text-green-700">{titleVal}</h5>
+                                 <p className="text-xs text-gray-500 mt-2 font-medium flex items-center gap-1.5"><FaClock className="text-bwi-gold" /> {timeVal}</p>
+                              </div>
                            </div>
-                           <div>
-                              <h5 className="font-bold text-sm text-gray-800 leading-snug group-hover:text-green-700">{item.title}</h5>
-                              <p className="text-xs text-gray-500 mt-2 font-medium flex items-center gap-1.5"><FaClock className="text-bwi-gold" /> {item.eventTime}</p>
-                           </div>
-                        </div>
-                      ))}
+                         );
+                       })}
                    </div>
                  ) : (
                    <p className="text-gray-500 text-sm">Tidak ada agenda terdekat saat ini.</p>

@@ -42,7 +42,7 @@ const Navbar = () => {
         <nav className="hidden md:flex space-x-8 font-medium text-sm items-center drop-shadow-md">
           <Link to="/" className="hover:text-bwi-gold transition-colors">Beranda</Link>
           <Link to="/profil" className="hover:text-bwi-gold transition-colors">Profil</Link>
-          <div className="relative group cursor-pointer py-2">
+          {/* <div className="relative group cursor-pointer py-2">
             <span className="hover:text-bwi-gold transition-colors flex items-center">
               Inovasi <span className="ml-1 text-[9px]">▼</span>
             </span>
@@ -51,7 +51,7 @@ const Navbar = () => {
               <Link to="/inovasi/kiss" className="block px-4 py-3 hover:bg-[#062c21] transition-colors">KISS</Link>
               <Link to="/inovasi/e-sakinah" className="block px-4 py-3 hover:bg-[#062c21] transition-colors">E-Sakinah</Link>
             </div>
-          </div>
+          </div> */}
           <Link to="/berita" className="hover:text-bwi-gold transition-colors">Informasi</Link>
           <a href="https://wa.me/6287865500022" target="_blank" rel="noopener noreferrer" className="hover:text-bwi-gold transition-colors">Kontak Kami</a>
         </nav>

@@ -31,22 +31,22 @@ const Sidebar = () => {
           <Link to="/admin/berita" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-[#0a5240]"><FaRegNewspaper /> Berita & Pengumuman</Link>
         </div>
 
-        <div className="mb-6 px-6">
+        {/* <div className="mb-6 px-6">
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">LAYANAN INTERAKTIF</p>
           <div className="flex flex-col gap-1">
             <Link to="/admin/esakinah" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-[#0a5240]"><FaHeart /> Verifikasi E-SAKINAH</Link>
             <Link to="/admin/kiss" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-[#0a5240]"><FaWater /> Reservasi KISS</Link>
           </div>
-        </div>
+        </div> */}
 
-        <div className="mb-6 px-6">
+        {/* <div className="mb-6 px-6">
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 text-bwi-gold">KONTEN SMILE</p>
           <div className="flex flex-col gap-1">
             <Link to="/admin/smile-tautan" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-[#0a5240]"><FaLink /> Smart Kampung & JDIH</Link>
             <Link to="/admin/smile-sumberrejo" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-[#0a5240]"><FaMapMarkerAlt /> Profil Sumberrejo</Link>
             <Link to="/admin/smile-edukasi" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-[#0a5240]"><FaBook /> SOP Layanan Edukasi</Link>
           </div>
-        </div>
+        </div> */}
 
         <div className="mb-6 px-6">
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">PROFIL KECAMATAN</p>

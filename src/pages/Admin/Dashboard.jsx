@@ -22,8 +22,8 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {[
           { title: "Total Publikasi", count: 36, active: "Berita & Pengumuman", action: "+ Tambah Publikasi", link: "/admin/berita/tambah", icon: <FaRegNewspaper />, color: "text-blue-600" },
-          { title: "Antrean E-Sakinah", count: 4, active: "Perlu Verifikasi", action: "Lihat Berkas", link: "/admin/esakinah", icon: <FaHeart />, color: "text-pink-600" },
-          { title: "Reservasi KISS", count: 2, active: "Menunggu Konfirmasi", action: "Kelola Jadwal", link: "/admin/kiss", icon: <FaWater />, color: "text-cyan-600" },
+          /* { title: "Antrean E-Sakinah", count: 4, active: "Perlu Verifikasi", action: "Lihat Berkas", link: "/admin/esakinah", icon: <FaHeart />, color: "text-pink-600" }, */
+          /* { title: "Reservasi KISS", count: 2, active: "Menunggu Konfirmasi", action: "Kelola Jadwal", link: "/admin/kiss", icon: <FaWater />, color: "text-cyan-600" }, */
           { title: "Pegawai Aktif", count: 18, active: "Struktur Organisasi", action: "Kelola Pegawai", link: "/admin/struktur", icon: <FaUsers />, color: "text-orange-600" },
         ].map((stat, idx) => (
           <div key={idx} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col justify-between">
@@ -44,7 +44,7 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 lg:col-span-1">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 lg:col-span-3">
           <div className="flex justify-between items-center mb-6 border-b border-gray-100 pb-2">
             <h3 className="font-bold text-gray-800 text-sm">Publikasi Terbaru</h3>
             <Link to="/admin/berita" className="text-[10px] font-semibold text-[#107058] hover:underline">Lihat Semua</Link>
@@ -68,7 +68,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 lg:col-span-2">
+        {/* <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 lg:col-span-2">
           <div className="flex justify-between items-center mb-6 border-b border-gray-100 pb-2">
             <h3 className="font-bold text-gray-800 text-sm">Antrean Berkas E-Sakinah</h3>
             <Link to="/admin/esakinah" className="text-[10px] font-semibold text-[#107058] hover:underline">Buka Halaman E-Sakinah</Link>
@@ -112,7 +112,7 @@ const Dashboard = () => {
               </tbody>
             </table>
           </div>
-        </div>
+        </div> */}
 
       </div>
     </div>

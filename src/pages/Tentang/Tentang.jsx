@@ -73,7 +73,7 @@ const Tentang = () => {
               { year: '1945', text: 'Pembentukan Kabupaten Banyuwangi dan penetapan pusat pemerintahan.' },
               { year: '1965', text: 'Perkembangan wilayah Administrasi Kabupaten Banyuwangi.' },
               { year: '2010', text: 'Peningkatan pelayanan publik berbasis teknologi informasi.' },
-              { year: '2024', text: 'Inovasi layanan digital melalui SMILE, KISS, dan E-Sakinah.' }
+              /* { year: '2024', text: 'Inovasi layanan digital melalui SMILE, KISS, dan E-Sakinah.' } */
             ].map((item, index) => (
               <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative">
                  <div className="w-4 h-4 rounded-full bg-bwi-gold absolute -top-2 left-6 ring-4 ring-white"></div>

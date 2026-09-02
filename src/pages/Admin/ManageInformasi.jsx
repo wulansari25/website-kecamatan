@@ -1,8 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaPlus, FaSearch, FaEdit, FaTrashAlt, FaClock, FaMapMarkerAlt } from 'react-icons/fa';
 
 const ManageInformasi = () => {
+  const [dataBerita, setDataBerita] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('Semua Kategori');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/berita')
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.status === 'success' && Array.isArray(json.data)) {
+          setDataBerita(json.data);
+        }
+      })
+      .catch((err) => {
+        console.error('Error fetching berita in Admin:', err);
+      });
+  }, []);
+
+  const filteredData = dataBerita.filter((item) => {
+    const matchCategory =
+      selectedCategory === 'Semua Kategori' || item.kategori === selectedCategory;
+    const matchSearch =
+      !searchQuery || item.judul.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchCategory && matchSearch;
+  });
+
   return (
     <div className="w-full bg-[#f8f9fa] min-h-full">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
@@ -21,7 +46,11 @@ const ManageInformasi = () => {
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <select className="border border-gray-200 text-sm rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:border-[#107058]">
+          <select 
+            value={selectedCategory} 
+            onChange={(e) => setSelectedCategory(e.target.value)} 
+            className="border border-gray-200 text-sm rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:border-[#107058]"
+          >
             <option>Semua Kategori</option>
             <option>Agenda Terdekat</option>
             <option>Kegiatan</option>
@@ -32,7 +61,13 @@ const ManageInformasi = () => {
           </select>
           <div className="relative flex-1 md:max-w-xs">
             <FaSearch className="absolute left-3 top-3 text-gray-400" />
-            <input type="text" placeholder="Cari judul informasi..." className="w-full border border-gray-200 text-sm rounded-lg pl-9 pr-4 py-2 bg-gray-50 focus:outline-none focus:border-[#107058]" />
+            <input 
+              type="text" 
+              placeholder="Cari judul informasi..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full border border-gray-200 text-sm rounded-lg pl-9 pr-4 py-2 bg-gray-50 focus:outline-none focus:border-[#107058]" 
+            />
           </div>
         </div>
 
@@ -50,95 +85,71 @@ const ManageInformasi = () => {
               </tr>
             </thead>
             <tbody className="text-sm text-gray-700">
-              {[
-                { 
-                  no: 1, 
-                  img: "1531482615713-2afd69097998", 
-                  judul: "Jadwal Pelayanan Perekaman e-KTP", 
-                  deskripsi: "Pemberitahuan kepada seluruh warga mengenai jadwal layanan jemput bola...",
-                  kat: "Agenda", 
-                  tgl: "24 Jul 2026", 
-                  waktu: "08.00 - 14.00 WIB",
-                  lokasi: "Keliling Kecamatan",
-                  status: "Publish" 
-                },
-                { 
-                  no: 2, 
-                  img: "1517245386807-bb43f82c33c4", 
-                  judul: "Upacara Hari Jadi Banyuwangi ke-253", 
-                  deskripsi: "Rangkaian peringatan hari jadi kota Banyuwangi berlangsung meriah...",
-                  kat: "Budaya", 
-                  tgl: "17 Jul 2026", 
-                  waktu: "07.00 - Selesai",
-                  lokasi: "Taman Blambangan",
-                  status: "Publish" 
-                },
-                { 
-                  no: 3, 
-                  img: "1532375810709-75b1da00537c", 
-                  judul: "Pelatihan Digital Marketing UMKM", 
-                  deskripsi: "Peningkatan kapasitas UMKM agar mampu bersaing di pasar digital...",
-                  kat: "UMKM", 
-                  tgl: "15 Jul 2026", 
-                  waktu: "-",
-                  lokasi: "-",
-                  status: "Draft" 
-                },
-              ].map((item) => (
-                <tr key={item.no} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                  <td className="py-4 px-4 font-semibold align-top">{item.no}</td>
-                  
-                  <td className="py-4 px-4 align-top">
-                    <img src={`https://images.unsplash.com/photo-${item.img}?q=80&w=150&auto=format&fit=crop`} alt="thumb" className="w-20 h-14 object-cover rounded-lg shadow-sm border border-gray-200" />
-                  </td>
-                  
-                  <td className="py-4 px-4 align-top">
-                    <p className="font-bold text-gray-900 mb-1">{item.judul}</p>
-                    <p className="text-xs text-gray-500 line-clamp-2">{item.deskripsi}</p>
-                  </td>
+              {filteredData.length > 0 ? (
+                filteredData.map((item, index) => {
+                  const dateObj = new Date(item.tanggal);
+                  const formattedDate = !isNaN(dateObj.getTime())
+                    ? dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+                    : item.tanggal;
+                  const thumbImg = item.gambar || 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=150&auto=format&fit=crop';
+                  const sumberText = item.sumber || 'Lokal Kecamatan';
 
-                  <td className="py-4 px-4 align-top text-xs">
-                    <div className="font-bold text-gray-700 mb-1">{item.tgl}</div>
-                    {item.waktu !== "-" && (
-                      <div className="flex items-center gap-1 text-gray-500 mt-1">
-                        <FaClock className="text-[10px]" /> {item.waktu}
-                      </div>
-                    )}
-                    {item.lokasi !== "-" && (
-                      <div className="flex items-center gap-1 text-gray-500 mt-1">
-                        <FaMapMarkerAlt className="text-[10px]" /> {item.lokasi}
-                      </div>
-                    )}
-                  </td>
-                  
-                  <td className="py-4 px-4 align-top">
-                    <span className={`px-2.5 py-1 rounded text-[10px] font-bold border ${item.kat === 'Agenda' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-gray-100 text-gray-600 border-gray-200'}`}>
-                      {item.kat}
-                    </span>
-                  </td>
-                  
-                  <td className="py-4 px-4 align-top">
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold ${item.status === 'Publish' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
-                      {item.status}
-                    </span>
-                  </td>
-                  
-                  <td className="py-4 px-4 align-top">
-                    <div className="flex justify-center gap-2">
-                      <Link 
-                        to={`/admin/berita/edit/${item.no}`} 
-                        className="text-blue-500 hover:bg-blue-50 p-2 rounded transition-colors inline-block"
-                        title="Edit Data"
-                      >
-                        <FaEdit />
-                      </Link>
-                      <button className="text-red-500 hover:bg-red-50 p-2 rounded transition-colors" title="Hapus Data">
-                        <FaTrashAlt />
-                      </button>
-                    </div>
+                  return (
+                    <tr key={item.id || index} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                      <td className="py-4 px-4 font-semibold align-top">{index + 1}</td>
+                      
+                      <td className="py-4 px-4 align-top">
+                        <img src={thumbImg} alt="thumb" className="w-20 h-14 object-cover rounded-lg shadow-sm border border-gray-200" />
+                      </td>
+                      
+                      <td className="py-4 px-4 align-top">
+                        <p className="font-bold text-gray-900 mb-1">{item.judul}</p>
+                        <p className="text-xs text-gray-500 line-clamp-2">{item.deskripsi}</p>
+                      </td>
+
+                      <td className="py-4 px-4 align-top text-xs">
+                        <div className="font-bold text-gray-700 mb-1">{formattedDate}</div>
+                        <div className="text-gray-500 text-[11px] mt-1 font-medium">
+                          Sumber: {sumberText}
+                        </div>
+                      </td>
+                      
+                      <td className="py-4 px-4 align-top">
+                        <span className={`px-2.5 py-1 rounded text-[10px] font-bold border ${item.kategori === 'Agenda' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-gray-100 text-gray-600 border-gray-200'}`}>
+                          {item.kategori || 'Kegiatan'}
+                        </span>
+                      </td>
+                      
+                      <td className="py-4 px-4 align-top">
+                        <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-green-100 text-green-700">
+                          Publish
+                        </span>
+                      </td>
+                      
+                      <td className="py-4 px-4 align-top">
+                        <div className="flex justify-center gap-2">
+                          <Link 
+                            to={`/admin/berita/edit/${item.id}`} 
+                            className="text-blue-500 hover:bg-blue-50 p-2 rounded transition-colors inline-block"
+                            title="Edit Data"
+                          >
+                            <FaEdit />
+                          </Link>
+                          <button className="text-red-500 hover:bg-red-50 p-2 rounded transition-colors" title="Hapus Data">
+                            <FaTrashAlt />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan="7" className="py-8 text-center text-gray-500">
+                    Tidak ada data berita.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
