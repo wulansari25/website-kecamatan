@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { FaSearch, FaEye, FaTrashAlt, FaCheckCircle, FaClock, FaExclamationTriangle } from 'react-icons/fa';
 
 const ManageESakinah = () => {
-  // Data dummy pengajuan (Sesuai dengan form user: Tanpa NIK, hanya Nama, WA, dan Tanggal Otomatis)
   const dummyPengajuan = [
     {
       id: 1,
@@ -31,7 +30,6 @@ const ManageESakinah = () => {
     }
   ];
 
-  // Fungsi untuk menentukan warna badge status
   const getStatusBadge = (status) => {
     switch (status) {
       case 'Menunggu Verifikasi':
@@ -54,7 +52,6 @@ const ManageESakinah = () => {
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         
-        {/* Kolom Filter & Pencarian */}
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <select className="border border-gray-200 text-sm rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:border-[#107058]">
             <option>Semua Status</option>
@@ -68,7 +65,6 @@ const ManageESakinah = () => {
           </div>
         </div>
 
-        {/* Tabel Data E-Sakinah */}
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[900px]">
             <thead>
@@ -105,7 +101,6 @@ const ManageESakinah = () => {
                   
                   <td className="py-4 px-4">
                     <div className="flex justify-center gap-2">
-                      {/* LINK MENUJU HALAMAN DETAIL E-SAKINAH */}
                       <Link 
                         to={`/admin/esakinah/detail/${item.id}`} 
                         className="flex items-center gap-2 bg-[#107058] text-white hover:bg-[#0a5240] px-3 py-1.5 rounded-lg transition-colors text-xs font-bold"
@@ -125,7 +120,6 @@ const ManageESakinah = () => {
           </table>
         </div>
         
-        {/* Pagination */}
         <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-100 text-xs text-gray-500">
           <p>Menampilkan 1-3 dari 45 pengajuan</p>
           <div className="flex gap-1">
