@@ -28,6 +28,32 @@ const ManageInformasi = () => {
     return matchCategory && matchSearch;
   });
 
+  const handleDelete = async (item) => {
+    if (!window.confirm(`Apakah Anda yakin ingin menghapus publikasi "${item.judul}"?`)) {
+      return;
+    }
+
+    try {
+      const isAgenda = item.kategori === 'Agenda';
+      const url = isAgenda
+        ? `http://localhost:5000/api/agenda/${item.id}`
+        : `http://localhost:5000/api/berita/${item.id}`;
+
+      const res = await fetch(url, { method: 'DELETE' });
+      const json = await res.json();
+
+      if (json.status === 'success') {
+        alert('Publikasi berhasil dihapus.');
+        setDataBerita((prev) => prev.filter((b) => b.id !== item.id));
+      } else {
+        alert(json.message || 'Gagal menghapus publikasi.');
+      }
+    } catch (err) {
+      console.error('Error deleting berita:', err);
+      alert('Terjadi kesalahan saat menghapus publikasi.');
+    }
+  };
+
   return (
     <div className="w-full bg-[#f8f9fa] min-h-full">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
@@ -135,7 +161,11 @@ const ManageInformasi = () => {
                           >
                             <FaEdit />
                           </Link>
-                          <button className="text-red-500 hover:bg-red-50 p-2 rounded transition-colors" title="Hapus Data">
+                          <button 
+                            onClick={() => handleDelete(item)}
+                            className="text-red-500 hover:bg-red-50 p-2 rounded transition-colors" 
+                            title="Hapus Data"
+                          >
                             <FaTrashAlt />
                           </button>
                         </div>
