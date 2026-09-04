@@ -62,7 +62,11 @@ const Sidebar = () => {
           <Link to="/admin/pengaturan" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-[#0a5240] transition-colors">
             <FaCog /> Pengaturan Akun
           </Link>
-          <Link to="/login" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-red-400 hover:text-white hover:bg-red-500/20 transition-colors mt-2">
+          <Link 
+            to="/login" 
+            onClick={() => localStorage.removeItem('isAdminAuthenticated')}
+            className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-red-400 hover:text-white hover:bg-red-500/20 transition-colors mt-2"
+          >
             <FaSignOutAlt /> Keluar Sistem
           </Link>
         </div>

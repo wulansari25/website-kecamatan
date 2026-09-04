@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import UserLayout from './layouts/UserLayout';
 import AdminLayout from './layouts/AdminLayout';
@@ -27,6 +27,11 @@ import ManageSumberrejo from './pages/Admin/ManageSumberrejo';
 import ManageEdukasi from './pages/Admin/ManageEdukasi';
 import PengaturanAkun from './pages/Admin/PengaturanAkun';
 
+const ProtectedAdminRoute = () => {
+  const isAuthenticated = localStorage.getItem('isAdminAuthenticated') === 'true';
+  return isAuthenticated ? <AdminLayout /> : <Navigate to="/login" replace />;
+};
+
 function App() {
   return (
     <Router>
@@ -45,7 +50,7 @@ function App() {
           <Route path="/inovasi/smile/edukasi" element={<Edukasi />} />
         </Route>
 
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route path="/admin" element={<ProtectedAdminRoute />}>
           <Route index element={<AdminDashboard />} />
 
           <Route path="berita" element={<ManageInformasi />} />

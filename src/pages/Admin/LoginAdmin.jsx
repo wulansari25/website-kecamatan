@@ -4,12 +4,26 @@ import { FaUser, FaLock, FaEye, FaEyeSlash, FaShieldAlt } from 'react-icons/fa';
 import bgImage from '../../assets/images/kantor-camat-dulu.png'; 
 
 const LoginAdmin = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate(); 
+
   const handleLogin = (e) => {
     e.preventDefault(); 
-        
-    navigate('/admin'); 
+    const activeUsername = localStorage.getItem('adminUsername') || 'kecamatanbanyuwangi@gmail.com';
+    const activeEmail = localStorage.getItem('adminEmail') || 'kecamatanbanyuwangi@gmail.com';
+    const activePassword = localStorage.getItem('adminPassword') || 'admin123';
+
+    const inputUser = username.trim();
+    if ((inputUser === activeUsername || inputUser === activeEmail || inputUser === 'kecamatanbanyuwangi@gmail.com') && password === activePassword) {
+      localStorage.setItem('isAdminAuthenticated', 'true');
+      setError('');
+      navigate('/admin'); 
+    } else {
+      setError('Email / Username atau Password yang Anda masukkan tidak valid.');
+    }
   };
 
   return (
@@ -53,6 +67,12 @@ const LoginAdmin = () => {
             <p className="text-sm text-gray-500">Silahkan masuk menggunakan akun resmi untuk mengakses dashboard admin.</p>
           </div>
 
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-xl text-xs font-semibold">
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-2">Username / Email Dinas</label>
@@ -63,6 +83,8 @@ const LoginAdmin = () => {
                 <input 
                   type="text" 
                   required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   placeholder="Masukkan username / email" 
                   className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#107058] focus:ring-1 focus:ring-[#107058] transition-all"
                 />
@@ -78,6 +100,8 @@ const LoginAdmin = () => {
                 <input 
                   type={showPassword ? "text" : "password"} 
                   required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="Masukkan password" 
                   className="w-full pl-11 pr-12 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#107058] focus:ring-1 focus:ring-[#107058] transition-all"
                 />
