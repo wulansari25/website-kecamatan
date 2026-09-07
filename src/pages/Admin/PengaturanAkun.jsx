@@ -3,13 +3,13 @@ import { FaSave, FaUserCircle, FaCamera, FaLock, FaEnvelope, FaUserTag, FaCheckC
 
 const PengaturanAkun = () => {
   // State Profile Image
-  const [profileImage, setProfileImage] = useState(() => localStorage.getItem('adminProfileImage') || null);
+  const [profileImage, setProfileImage] = useState(null);
   const fileInputRef = useRef(null);
 
-  // State Informasi Dasar
-  const [namaLengkap, setNamaLengkap] = useState(() => localStorage.getItem('adminNamaLengkap') || 'Fitri Ayu Wulan');
-  const [username, setUsername] = useState(() => localStorage.getItem('adminUsername') || 'kecamatanbanyuwangi@gmail.com');
-  const [email, setEmail] = useState(() => localStorage.getItem('adminEmail') || 'kecamatanbanyuwangi@gmail.com');
+  // State Informasi Dasar (Permanen / Hardcoded)
+  const [namaLengkap, setNamaLengkap] = useState('Kecamatan Banyuwangi');
+  const [username, setUsername] = useState('kecamatanbanyuwangi@gmail.com');
+  const [email, setEmail] = useState('kecamatanbanyuwangi@gmail.com');
   const [infoSuccess, setInfoSuccess] = useState('');
 
   // State Ubah Password
@@ -25,10 +25,7 @@ const PengaturanAkun = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const imgResult = reader.result;
-        setProfileImage(imgResult);
-        localStorage.setItem('adminProfileImage', imgResult);
-        window.dispatchEvent(new Event('adminProfileUpdated'));
+        setProfileImage(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -40,13 +37,6 @@ const PengaturanAkun = () => {
     if (!namaLengkap.trim() || !username.trim() || !email.trim()) {
       return;
     }
-    localStorage.setItem('adminNamaLengkap', namaLengkap.trim());
-    localStorage.setItem('adminUsername', username.trim());
-    localStorage.setItem('adminEmail', email.trim());
-    if (profileImage) {
-      localStorage.setItem('adminProfileImage', profileImage);
-    }
-    window.dispatchEvent(new Event('adminProfileUpdated'));
 
     setInfoSuccess('Informasi profil berhasil disimpan!');
     setTimeout(() => setInfoSuccess(''), 4000);

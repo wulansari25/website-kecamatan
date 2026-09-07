@@ -12,8 +12,8 @@ const LoginAdmin = () => {
 
   const handleLogin = (e) => {
     e.preventDefault(); 
-    const activeUsername = localStorage.getItem('adminUsername') || 'kecamatanbanyuwangi@gmail.com';
-    const activeEmail = localStorage.getItem('adminEmail') || 'kecamatanbanyuwangi@gmail.com';
+    const activeUsername = 'kecamatanbanyuwangi@gmail.com';
+    const activeEmail = 'kecamatanbanyuwangi@gmail.com';
     const activePassword = localStorage.getItem('adminPassword') || 'admin123';
 
     const inputUser = username.trim();

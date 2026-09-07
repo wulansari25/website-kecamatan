@@ -1,9 +1,34 @@
 import express from 'express';
 import cors from 'cors';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { getDb } from './config/db.js';
 import beritaRoutes from './routes/beritaRoutes.js';
 import agendaRoutes from './routes/agendaRoutes.js';
 import { initNewsCron } from './cron/newsCron.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Auto-load .env file into process.env
+const envPaths = [path.join(__dirname, '.env'), path.join(__dirname, '..', '.env')];
+for (const envPath of envPaths) {
+  if (fs.existsSync(envPath)) {
+    const envConfig = fs.readFileSync(envPath, 'utf8');
+    for (const line of envConfig.split('\n')) {
+      const trimmed = line.trim();
+      if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
+        const [key, ...vals] = trimmed.split('=');
+        const k = key.trim();
+        const v = vals.join('=').trim().replace(/^["']|["']$/g, '');
+        if (k && process.env[k] === undefined) {
+          process.env[k] = v;
+        }
+      }
+    }
+  }
+}
 
 const app = express();
 const PORT = process.env.PORT || 5000;

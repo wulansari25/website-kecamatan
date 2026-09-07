@@ -1,24 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { FaBars, FaBell, FaUserCircle } from 'react-icons/fa';
 
 const Topbar = () => {
-  const [namaLengkap, setNamaLengkap] = useState(() => localStorage.getItem('adminNamaLengkap') || 'Fitri Ayu Wulan');
-  const [profileImage, setProfileImage] = useState(() => localStorage.getItem('adminProfileImage') || null);
-
-  useEffect(() => {
-    const handleProfileUpdate = () => {
-      setNamaLengkap(localStorage.getItem('adminNamaLengkap') || 'Fitri Ayu Wulan');
-      setProfileImage(localStorage.getItem('adminProfileImage') || null);
-    };
-
-    window.addEventListener('adminProfileUpdated', handleProfileUpdate);
-    window.addEventListener('storage', handleProfileUpdate);
-
-    return () => {
-      window.removeEventListener('adminProfileUpdated', handleProfileUpdate);
-      window.removeEventListener('storage', handleProfileUpdate);
-    };
-  }, []);
+  const namaLengkap = 'Kecamatan Banyuwangi';
 
   return (
     <div className="h-20 bg-white border-b border-gray-200 px-6 lg:px-10 flex items-center justify-between shadow-sm shrink-0 relative z-10">
@@ -42,15 +26,7 @@ const Topbar = () => {
             <p className="text-sm font-bold text-bwi-dark">{namaLengkap}</p>
             <p className="text-[10px] text-gray-500 font-semibold uppercase tracking-widest">Super Admin</p>
           </div>
-          {profileImage ? (
-            <img 
-              src={profileImage} 
-              alt="Avatar Admin" 
-              className="w-10 h-10 rounded-full object-cover border border-gray-200 shadow-sm" 
-            />
-          ) : (
-            <FaUserCircle className="text-4xl text-gray-300" />
-          )}
+          <FaUserCircle className="text-4xl text-gray-300" />
         </div>
       </div>
 
