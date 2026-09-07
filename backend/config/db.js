@@ -1,4 +1,10 @@
 import mysql from 'mysql2/promise';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 let pool = null;
 let dbAdapter = null;
@@ -63,68 +69,7 @@ export async function getDb() {
       queueLimit: 0
     });
 
-    // 3. Inisialisasi Skema Tabel MySQL jika belum ada
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS berita (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        judul VARCHAR(255) NOT NULL,
-        deskripsi TEXT NOT NULL,
-        gambar MEDIUMTEXT DEFAULT NULL,
-        kategori VARCHAR(50) NOT NULL DEFAULT 'Kegiatan',
-        tanggal DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        sumber VARCHAR(100) NOT NULL DEFAULT 'Internal',
-        link_asli VARCHAR(500) DEFAULT NULL,
-        INDEX idx_berita_tanggal (tanggal DESC),
-        INDEX idx_berita_link_asli (link_asli(255))
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    `);
-
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS agenda (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        judul TEXT NOT NULL,
-        tanggal VARCHAR(50) DEFAULT NULL,
-        tanggal_tampil VARCHAR(20) NOT NULL,
-        waktu VARCHAR(100) NOT NULL,
-        lokasi VARCHAR(255) DEFAULT NULL
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    `);
-
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS admin (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        nama_lengkap VARCHAR(255) NOT NULL DEFAULT 'Kecamatan Banyuwangi',
-        username VARCHAR(255) NOT NULL DEFAULT 'kecamatanbanyuwangi@gmail.com',
-        email VARCHAR(255) NOT NULL DEFAULT 'kecamatanbanyuwangi@gmail.com',
-        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    `);
-
-    // 4. Seed Data Awal Agenda jika masih kosong
-    const [agendaRows] = await pool.query('SELECT COUNT(*) as count FROM agenda');
-    if (agendaRows[0].count === 0) {
-      await pool.query(`
-        INSERT INTO agenda (judul, tanggal, tanggal_tampil, waktu, lokasi) VALUES
-        ('Jadwal Pelayanan Perekaman e-KTP Keliling Kecamatan', '2026-07-24', '24 JUL', '08.00 - 14.00 WIB', 'Balai Kelurahan Kepatihan & Tamanbaru'),
-        ('Musrenbang Kecamatan Banyuwangi Tahun 2026 Resmi Digelar', '2026-07-22', '22 JUL', '09.00 - 13.00 WIB', 'Aula Kecamatan Banyuwangi'),
-        ('Pembagian Bibit Tanaman Produktif untuk Warga', '2026-07-23', '23 JUL', '09.00 - Selesai', 'Halaman Pendopo Kecamatan Banyuwangi')
-      `);
-      console.log('🌱 Seed data agenda berhasil ditambahkan ke MySQL.');
-    }
-
-    // 5. Seed Data Awal Admin jika masih kosong
-    const [adminRows] = await pool.query('SELECT COUNT(*) as count FROM admin');
-    if (adminRows[0].count === 0) {
-      await pool.query(`
-        INSERT INTO admin (nama_lengkap, username, email) VALUES
-        ('Kecamatan Banyuwangi', 'kecamatanbanyuwangi@gmail.com', 'kecamatanbanyuwangi@gmail.com')
-      `);
-      console.log('🌱 Seed data admin berhasil ditambahkan ke MySQL.');
-    }
-
-    console.log(`✅ Database MySQL (${database}@${host}:${port}) terhubung & schema siap digunakan.`);
-
-    // 6. Interface Adapter Kompatibel SQLite -> MySQL (all, get, run, exec)
+    // 3. Interface Adapter Kompatibel SQLite -> MySQL (all, get, run, exec)
     dbAdapter = {
       async all(sql, params = []) {
         const [rows] = await pool.query(sql, params);
@@ -147,6 +92,27 @@ export async function getDb() {
       pool
     };
 
+    // 4. Auto-Run Migrations dari folder backend/migrations/
+    const migrationsDir = path.join(__dirname, '..', 'migrations');
+    if (fs.existsSync(migrationsDir)) {
+      const files = fs.readdirSync(migrationsDir)
+        .filter(file => file.endsWith('.sql'))
+        .sort();
+
+      for (const file of files) {
+        const filePath = path.join(migrationsDir, file);
+        const sql = fs.readFileSync(filePath, 'utf8').trim();
+        if (sql) {
+          try {
+            await pool.query(sql);
+          } catch (err) {
+            console.error(`❌ Migration error (${file}):`, err.message);
+          }
+        }
+      }
+    }
+
+    console.log(`✅ Database MySQL (${database}@${host}:${port}) terhubung & migrations siap digunakan.`);
     return dbAdapter;
   } catch (error) {
     console.error('❌ Error inisialisasi tabel MySQL Laragon:', error.message);

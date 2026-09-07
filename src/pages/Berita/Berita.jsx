@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FaSearch, FaTimes, FaArrowRight, FaCalendarAlt, FaClock, FaMapMarkerAlt, FaBars } from 'react-icons/fa';
 import batikPattern from '../../assets/images/batik.png';
 import kantorCamatDulu from '../../assets/images/kantor-camat-dulu.png';
+import { dummyNews, dummyAgendas } from '../../data/dummyData';
 
 const Berita = () => {
   const [activeCategory, setActiveCategory] = useState('Semua');
@@ -14,8 +15,8 @@ const Berita = () => {
   const [visibleNewsCount, setVisibleNewsCount] = useState(5);
   const [visibleAgendaCount, setVisibleAgendaCount] = useState(3);
 
-  const [newsData, setNewsData] = useState([]);
-  const [agendaData, setAgendaData] = useState([]);
+  const [newsData, setNewsData] = useState(dummyNews);
+  const [agendaData, setAgendaData] = useState(dummyAgendas);
 
   const categories = ['Semua', 'Kegiatan', 'Pengumuman', 'Pelayanan', 'Budaya', 'UMKM'];
 
@@ -72,7 +73,7 @@ const Berita = () => {
     fetch('http://localhost:5000/api/berita')
       .then((res) => res.json())
       .then((json) => {
-        if (json.status === 'success' && Array.isArray(json.data)) {
+        if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
           const formatted = json.data.map((item) => {
             const dateObj = new Date(item.tanggal);
             const dateStr = !isNaN(dateObj.getTime())
@@ -101,7 +102,7 @@ const Berita = () => {
     fetch('http://localhost:5000/api/agenda')
       .then((res) => res.json())
       .then((json) => {
-        if (json.status === 'success' && Array.isArray(json.data)) {
+        if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
           setAgendaData(json.data);
         }
       })

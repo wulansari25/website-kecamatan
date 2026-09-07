@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaPlus, FaSearch, FaEdit, FaTrashAlt, FaClock, FaMapMarkerAlt } from 'react-icons/fa';
+import { dummyNews } from '../../data/dummyData';
 
 const ManageInformasi = () => {
-  const [dataBerita, setDataBerita] = useState([]);
+  const [dataBerita, setDataBerita] = useState(dummyNews);
   const [selectedCategory, setSelectedCategory] = useState('Semua Kategori');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -11,7 +12,7 @@ const ManageInformasi = () => {
     fetch('http://localhost:5000/api/berita')
       .then((res) => res.json())
       .then((json) => {
-        if (json.status === 'success' && Array.isArray(json.data)) {
+        if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
           setDataBerita(json.data);
         }
       })
