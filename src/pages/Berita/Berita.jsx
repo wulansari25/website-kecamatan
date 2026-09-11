@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FaSearch, FaTimes, FaArrowRight, FaCalendarAlt, FaClock, FaMapMarkerAlt, FaBars } from 'react-icons/fa';
 import batikPattern from '../../assets/images/batik.png';
 import kantorCamatDulu from '../../assets/images/kantor-camat-dulu.png';
-import { dummyNews, dummyAgendas } from '../../data/dummyData';
+import { dummyNews } from '../../data/dummyData';
 
 const Berita = () => {
   const [activeCategory, setActiveCategory] = useState('Semua');
@@ -16,12 +16,12 @@ const Berita = () => {
   const [visibleAgendaCount, setVisibleAgendaCount] = useState(3);
 
   const [newsData, setNewsData] = useState(dummyNews);
-  const [agendaData, setAgendaData] = useState(dummyAgendas);
+const [agendaData, setAgendaData] = useState([]);
 
   const categories = ['Semua', 'Kegiatan', 'Pengumuman', 'Pelayanan', 'Budaya', 'UMKM'];
 
   // Static Agenda Terdekat (Fallback data)
-  const dummyAgendas = [
+const fallbackAgendas = [
     {
       id: 'agenda-1',
       category: 'Pengumuman',
@@ -130,7 +130,7 @@ const Berita = () => {
   const mainNews = processedNews.length > 0 ? processedNews[0] : null;
   const gridNews = processedNews.length > 1 ? processedNews.slice(1, visibleNewsCount) : [];
 
-  const allAgendas = agendaData.length > 0 ? agendaData : dummyAgendas;
+  const allAgendas = agendaData.length > 0 ? agendaData : fallbackAgendas;
   const visibleAgendas = allAgendas.slice(0, visibleAgendaCount);
 
   const handleLoadMore = () => {
