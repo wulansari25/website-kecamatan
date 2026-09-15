@@ -1,8 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaSearch, FaTimes, FaArrowRight, FaCalendarAlt, FaClock, FaMapMarkerAlt, FaBars } from 'react-icons/fa';
 import batikPattern from '../../assets/images/batik.png';
 import kantorCamatDulu from '../../assets/images/kantor-camat-dulu.png';
 import { dummyNews } from '../../data/dummyData';
+import { socket } from '../../socket';
+
+const formatSingleNews = (item) => {
+  const dateObj = new Date(item.tanggal);
+  const dateStr = !isNaN(dateObj.getTime())
+    ? dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+    : item.tanggal;
+
+  return {
+    id: item.id,
+    category: item.kategori || 'Kegiatan',
+    title: item.judul,
+    date: dateStr,
+    author: item.sumber || 'Admin',
+    img: item.gambar || 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=1000&auto=format&fit=crop',
+    shortDesc: item.deskripsi,
+    fullDesc: item.deskripsi,
+    link_asli: item.link_asli
+  };
+};
 
 const Berita = () => {
   const [activeCategory, setActiveCategory] = useState('Semua');
@@ -16,12 +36,12 @@ const Berita = () => {
   const [visibleAgendaCount, setVisibleAgendaCount] = useState(3);
 
   const [newsData, setNewsData] = useState(dummyNews);
-const [agendaData, setAgendaData] = useState([]);
+  const [agendaData, setAgendaData] = useState([]);
 
   const categories = ['Semua', 'Kegiatan', 'Pengumuman', 'Pelayanan', 'Budaya', 'UMKM'];
 
   // Static Agenda Terdekat (Fallback data)
-const fallbackAgendas = [
+  const fallbackAgendas = [
     {
       id: 'agenda-1',
       category: 'Pengumuman',
@@ -69,29 +89,12 @@ const fallbackAgendas = [
     }
   ];
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetch('http://localhost:5000/api/berita')
       .then((res) => res.json())
       .then((json) => {
         if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
-          const formatted = json.data.map((item) => {
-            const dateObj = new Date(item.tanggal);
-            const dateStr = !isNaN(dateObj.getTime())
-              ? dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
-              : item.tanggal;
-
-            return {
-              id: item.id,
-              category: item.kategori || 'Kegiatan',
-              title: item.judul,
-              date: dateStr,
-              author: item.sumber || 'Admin',
-              img: item.gambar || 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=1000&auto=format&fit=crop',
-              shortDesc: item.deskripsi,
-              fullDesc: item.deskripsi,
-              link_asli: item.link_asli
-            };
-          });
+          const formatted = json.data.map(formatSingleNews);
           setNewsData(formatted);
         }
       })
@@ -109,7 +112,50 @@ const fallbackAgendas = [
       .catch((err) => {
         console.error('Error fetching agenda:', err);
       });
+
+    const handleBeritaCreated = (item) => {
+      const formatted = formatSingleNews(item);
+      setNewsData((prev) => [formatted, ...prev.filter((n) => n.id !== formatted.id)]);
+    };
+
+    const handleBeritaUpdated = (item) => {
+      const formatted = formatSingleNews(item);
+      setNewsData((prev) => prev.map((n) => (n.id === formatted.id ? formatted : n)));
+    };
+
+    const handleBeritaDeleted = ({ id }) => {
+      setNewsData((prev) => prev.filter((n) => n.id !== id));
+    };
+
+    const handleAgendaCreated = (item) => {
+      setAgendaData((prev) => [item, ...prev.filter((a) => a.id !== item.id)]);
+    };
+
+    const handleAgendaUpdated = (item) => {
+      setAgendaData((prev) => prev.map((a) => (a.id === item.id ? item : a)));
+    };
+
+    const handleAgendaDeleted = ({ id }) => {
+      setAgendaData((prev) => prev.filter((a) => a.id !== id));
+    };
+
+    socket.on('berita:created', handleBeritaCreated);
+    socket.on('berita:updated', handleBeritaUpdated);
+    socket.on('berita:deleted', handleBeritaDeleted);
+    socket.on('agenda:created', handleAgendaCreated);
+    socket.on('agenda:updated', handleAgendaUpdated);
+    socket.on('agenda:deleted', handleAgendaDeleted);
+
+    return () => {
+      socket.off('berita:created', handleBeritaCreated);
+      socket.off('berita:updated', handleBeritaUpdated);
+      socket.off('berita:deleted', handleBeritaDeleted);
+      socket.off('agenda:created', handleAgendaCreated);
+      socket.off('agenda:updated', handleAgendaUpdated);
+      socket.off('agenda:deleted', handleAgendaDeleted);
+    };
   }, []);
+
 
   let processedNews = activeCategory === 'Semua' 
     ? newsData 

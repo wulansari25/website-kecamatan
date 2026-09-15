@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { NotificationProvider } from './context/NotificationContext';
 
 import UserLayout from './layouts/UserLayout';
 import AdminLayout from './layouts/AdminLayout';
@@ -34,45 +35,47 @@ const ProtectedAdminRoute = () => {
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        
-        <Route path="/login" element={<LoginAdmin />} />
-
-        <Route element={<UserLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/profil" element={<Tentang />} />
-          <Route path="/berita" element={<Berita />} />
-          <Route path="/inovasi/kiss" element={<Kiss />} />
-          <Route path="/inovasi/e-sakinah" element={<ESakinah />} />
-          <Route path="/inovasi/smile" element={<Smile />} /> 
-          <Route path="/inovasi/smile/sumberrejo" element={<Sumberrejo />} />
-          <Route path="/inovasi/smile/edukasi" element={<Edukasi />} />
-        </Route>
-
-        <Route path="/admin" element={<ProtectedAdminRoute />}>
-          <Route index element={<AdminDashboard />} />
-
-          <Route path="berita" element={<ManageInformasi />} />
-          <Route path="berita/tambah" element={<TambahBerita />} />
-          <Route path="berita/edit/:id" element={<EditBerita />} />
-          <Route path="pengaturan" element={<PengaturanAkun />} />
+    <NotificationProvider>
+      <Router>
+        <Routes>
           
-          <Route path="esakinah" element={<ManageESakinah />} />
-          <Route path="esakinah/detail/:id" element={<DetailESakinah />} />
-          <Route path="kiss" element={<ManageKiss />} />
-          
-          <Route path="tentang" element={<ManageProfil />} />
-          <Route path="struktur" element={<ManageStruktur />} />
-          
-          <Route path="smile-tautan" element={<ManageSmile />} />
-          <Route path="smile-sumberrejo" element={<ManageSumberrejo />} />
-          <Route path="smile-edukasi" element={<ManageEdukasi />} />
-        </Route>
+          <Route path="/login" element={<LoginAdmin />} />
 
-      </Routes>
-    </Router>
+          <Route element={<UserLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/profil" element={<Tentang />} />
+            <Route path="/berita" element={<Berita />} />
+            <Route path="/inovasi/kiss" element={<Kiss />} />
+            <Route path="/inovasi/e-sakinah" element={<ESakinah />} />
+            <Route path="/inovasi/smile" element={<Smile />} /> 
+            <Route path="/inovasi/smile/sumberrejo" element={<Sumberrejo />} />
+            <Route path="/inovasi/smile/edukasi" element={<Edukasi />} />
+          </Route>
+
+          <Route path="/admin" element={<ProtectedAdminRoute />}>
+            <Route index element={<AdminDashboard />} />
+
+            <Route path="berita" element={<ManageInformasi />} />
+            <Route path="berita/tambah" element={<TambahBerita />} />
+            <Route path="berita/edit/:id" element={<EditBerita />} />
+            <Route path="pengaturan" element={<PengaturanAkun />} />
+            
+            <Route path="esakinah" element={<ManageESakinah />} />
+            <Route path="esakinah/detail/:id" element={<DetailESakinah />} />
+            <Route path="kiss" element={<ManageKiss />} />
+            
+            <Route path="tentang" element={<ManageProfil />} />
+            <Route path="struktur" element={<ManageStruktur />} />
+            
+            <Route path="smile-tautan" element={<ManageSmile />} />
+            <Route path="smile-sumberrejo" element={<ManageSumberrejo />} />
+            <Route path="smile-edukasi" element={<ManageEdukasi />} />
+          </Route>
+
+        </Routes>
+      </Router>
+    </NotificationProvider>
   );
 }
 
-export default App;
+export default App;

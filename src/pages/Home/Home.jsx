@@ -3,9 +3,6 @@ import { Link } from 'react-router-dom';
 import { FaArrowRight, FaLandmark, FaMapMarkedAlt, FaSitemap } from 'react-icons/fa';
 import batikPattern from '../../assets/images/batik.png';
 import kantorCamatBg from '../../assets/images/kantor-camat.png';
-import logoSmile from '../../assets/images/logo-smile.png';
-import logoKiss from '../../assets/images/logo-kiss.png';
-import logoEsakinah from '../../assets/images/logo-esakinah.png';
 import profilVideo from '../../assets/videos/selamat-datang.mp4';
 import imgKelereng from '../../assets/images/lomba-kelereng.JPG';
 import imgKeluarga from '../../assets/images/keluarga.jpeg';
@@ -13,7 +10,39 @@ import imgTenis from '../../assets/images/lomba-tenis.jpeg';
 import imgCamat from '../../assets/images/bapak-camat.JPG';
 import imgKelereng2 from '../../assets/images/kelereng2.JPG';
 import imgCamatLurah from '../../assets/images/camat-lurah.jpeg';
+import { socket } from '../../socket';
 
+
+const defaultNews = [
+  {
+    id: 1,
+    judul: "Musrenbang Kecamatan Banyuwangi Tahun 2026 Resmi Digelar.",
+    deskripsi: "Musrenbang tahun 2026 membahas rencana pembangunan prioritas yang akan dilaksanakan di Kecamatan Banyuwangi untuk meningkatkan kesejahteraan masyarakat secara menyeluruh.",
+    tanggal: "2026-07-23T00:00:00.000Z",
+    gambar: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=800&auto=format&fit=crop"
+  },
+  {
+    id: 2,
+    judul: "Pelatihan Digital Marketing bagi seluruh UMKM.",
+    deskripsi: "Pelatihan strategi digital marketing untuk UMKM Kecamatan Banyuwangi.",
+    tanggal: "2026-07-13T00:00:00.000Z",
+    gambar: "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=400&auto=format&fit=crop"
+  },
+  {
+    id: 3,
+    judul: "Upacara peringatan Hari Jadi Banyuwangi ke-272.",
+    deskripsi: "Peringatan Harjaba tingkat Kecamatan Banyuwangi berlangsung khidmat.",
+    tanggal: "2026-07-15T00:00:00.000Z",
+    gambar: "https://images.unsplash.com/photo-1532375810709-75b1da00537c?q=80&w=400&auto=format&fit=crop"
+  }
+];
+
+const defaultAgenda = [
+  { id: 1, judul: "Rapat Koordinasi Kecamatan", tanggal_tampil: "26 JUL", waktu: "08.00-10.00 WIB", lokasi: "Aula Kecamatan" },
+  { id: 2, judul: "Rapat Koordinasi Kecamatan", tanggal_tampil: "27 JUL", waktu: "08.30-12.00 WIB", lokasi: "Kelurahan Kepatihan" },
+  { id: 3, judul: "Rapat Koordinasi Kecamatan", tanggal_tampil: "30 JUL", waktu: "19.00-Selesai", lokasi: "Aula Kecamatan" },
+  { id: 4, judul: "Rapat Koordinasi Kecamatan", tanggal_tampil: "30 JUL", waktu: "19.00-Selesai", lokasi: "Aula Kecamatan" }
+];
 
 const Home = () => {
   const sliderImages = [
@@ -26,6 +55,8 @@ const Home = () => {
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [beritaList, setBeritaList] = useState(defaultNews);
+  const [agendaList, setAgendaList] = useState(defaultAgenda);
 
   useEffect(() => {
     const slideInterval = setInterval(() => {
@@ -33,6 +64,89 @@ const Home = () => {
     }, 5000);
     return () => clearInterval(slideInterval);
   }, [sliderImages.length]);
+
+  // Fetch data dari Backend & Sinkronisasi Real-time
+  useEffect(() => {
+    fetch('http://localhost:5000/api/berita')
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
+          setBeritaList(json.data);
+        }
+      })
+      .catch((err) => console.error('Error fetching berita on Home:', err));
+
+    fetch('http://localhost:5000/api/agenda')
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
+          setAgendaList(json.data);
+        }
+      })
+      .catch((err) => console.error('Error fetching agenda on Home:', err));
+
+    // Listeners Real-time Socket.io
+    const handleBeritaCreated = (item) => {
+      setBeritaList((prev) => [item, ...prev.filter((b) => b.id !== item.id)]);
+    };
+
+    const handleBeritaUpdated = (item) => {
+      setBeritaList((prev) => prev.map((b) => (b.id === item.id ? item : b)));
+    };
+
+    const handleBeritaDeleted = ({ id }) => {
+      setBeritaList((prev) => prev.filter((b) => b.id !== id));
+    };
+
+    const handleAgendaCreated = (item) => {
+      setAgendaList((prev) => [item, ...prev.filter((a) => a.id !== item.id)]);
+    };
+
+    const handleAgendaUpdated = (item) => {
+      setAgendaList((prev) => prev.map((a) => (a.id === item.id ? item : a)));
+    };
+
+    const handleAgendaDeleted = ({ id }) => {
+      setAgendaList((prev) => prev.filter((a) => a.id !== id));
+    };
+
+    socket.on('berita:created', handleBeritaCreated);
+    socket.on('berita:updated', handleBeritaUpdated);
+    socket.on('berita:deleted', handleBeritaDeleted);
+    socket.on('agenda:created', handleAgendaCreated);
+    socket.on('agenda:updated', handleAgendaUpdated);
+    socket.on('agenda:deleted', handleAgendaDeleted);
+
+    return () => {
+      socket.off('berita:created', handleBeritaCreated);
+      socket.off('berita:updated', handleBeritaUpdated);
+      socket.off('berita:deleted', handleBeritaDeleted);
+      socket.off('agenda:created', handleAgendaCreated);
+      socket.off('agenda:updated', handleAgendaUpdated);
+      socket.off('agenda:deleted', handleAgendaDeleted);
+    };
+  }, []);
+
+  const formatDate = (isoStr) => {
+    if (!isoStr) return '';
+    const d = new Date(isoStr);
+    if (isNaN(d.getTime())) return isoStr;
+    return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  };
+
+  const parseAgendaDate = (item) => {
+    if (item.tanggal_tampil) {
+      const parts = item.tanggal_tampil.trim().split(' ');
+      if (parts.length >= 2) {
+        return { tgl: parts[0], bln: parts[1].toUpperCase() };
+      }
+    }
+    return { tgl: '26', bln: 'JUL' };
+  };
+
+  const featuredNews = beritaList.length > 0 ? beritaList[0] : defaultNews[0];
+  const sideNews = beritaList.length > 1 ? beritaList.slice(1, 3) : defaultNews.slice(1, 3);
+  const displayAgenda = agendaList.length > 0 ? agendaList.slice(0, 4) : defaultAgenda;
 
   const prevSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex === 0 ? sliderImages.length - 1 : prevIndex - 1));
@@ -216,112 +330,58 @@ const Home = () => {
         </div>
       </section>
 
-      {/* <section className="py-24 relative z-10">
-        <div className="container mx-auto px-6 lg:px-16 text-center">
-          <h2 className="text-4xl font-serif font-bold text-bwi-dark mb-4 uppercase">Inovasi Kecamatan Banyuwangi</h2>
-          <p className="text-gray-600 mb-16 text-lg">Tiga Inovasi unggulan untuk pelayanan yang lebih baik bagi masyarakat</p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-left">
-            <div className="bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col relative pb-8 group hover:-translate-y-2 transition-transform duration-300">
-              <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=800&auto=format&fit=crop" alt="SMILE" className="h-72 w-full object-cover" />
-              <div className="p-8 bg-white z-10 rounded-tl-[3rem] -mt-12 mx-3 shadow-sm flex flex-col h-full">
-                 <div className="flex items-center gap-4 mb-4">
-                   <img src={logoSmile} alt="Logo SMILE" className="w-14 h-14 md:w-16 md:h-16 object-contain" />
-                   <h3 className="font-bold text-2xl text-bwi-dark">SMILE</h3>
-                 </div>
-                 <p className="text-[11px] font-bold text-gray-400 tracking-wider mb-5 uppercase line-clamp-2">Sumberrejo Mobile Integrated, Literated and Educated</p>
-                 <p className="text-sm text-gray-600 mb-8 leading-relaxed flex-grow">SMILE adalah layanan informasi dan pengajuan kebutuhan masyarakat secara online yang mudah, cepat dan transparan.</p>
-                 <Link to="/inovasi/smile" className="bg-bwi-dark text-white px-6 py-3.5 text-sm font-semibold rounded-lg hover:bg-bwi-news transition-colors flex items-center justify-center gap-3">Baca selengkapnya <FaArrowRight className="text-bwi-gold" /></Link>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col relative pb-8 group hover:-translate-y-2 transition-transform duration-300">
-              <img src="https://images.unsplash.com/photo-1524704654690-b56c05c78a00?q=80&w=800&auto=format&fit=crop" alt="KISS" className="h-72 w-full object-cover" />
-              <div className="p-8 bg-white z-10 rounded-tl-[3rem] -mt-12 mx-3 shadow-sm flex flex-col h-full">
-                 <div className="flex items-center gap-4 mb-4">
-                   <img src={logoKiss} alt="Logo KISS" className="w-14 h-14 md:w-16 md:h-16 object-contain" />
-                   <h3 className="font-bold text-2xl text-bwi-dark">KISS</h3>
-                 </div>
-                 <p className="text-[11px] font-bold text-gray-400 tracking-wider mb-5 uppercase line-clamp-2">Kampung Ikan Sumber Seng</p>
-                 <p className="text-sm text-gray-600 mb-8 leading-relaxed flex-grow">KISS (Kampung Ikan Sumber Seng) merupakan wisata edukasi perikanan dan kuliner khas Banyuwangi. Reservasi terlebih dahulu sebelum berkunjung.</p>
-                 <Link to="/inovasi/kiss" className="bg-bwi-dark text-white px-6 py-3.5 text-sm font-semibold rounded-lg hover:bg-bwi-news transition-colors flex items-center justify-center gap-3">Baca selengkapnya <FaArrowRight className="text-bwi-gold" /></Link>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col relative pb-8 group hover:-translate-y-2 transition-transform duration-300">
-              <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=800&auto=format&fit=crop" alt="E-SAKINAH" className="h-72 w-full object-cover" />
-              <div className="p-8 bg-white z-10 rounded-tl-[3rem] -mt-12 mx-3 shadow-sm flex flex-col h-full">
-                 <div className="flex items-center gap-4 mb-4">
-                   <img src={logoEsakinah} alt="Logo E-SAKINAH" className="w-14 h-14 md:w-16 md:h-16 object-contain" />
-                   <h3 className="font-bold text-2xl text-bwi-dark">E-SAKINAH</h3>
-                 </div>
-                 <p className="text-[11px] font-bold text-gray-400 tracking-wider mb-5 uppercase line-clamp-2">Sistem Informasi Pencatatan Dispensasi Nikah</p>
-                 <p className="text-sm text-gray-600 mb-8 leading-relaxed flex-grow">E-Sakinah adalah sistem informasi pencatatan dan pengajuan dispensasi nikah secara online yang terintegrasi dan aman.</p>
-                 <Link to="/inovasi/e-sakinah" className="bg-bwi-dark text-white px-6 py-3.5 text-sm font-semibold rounded-lg hover:bg-bwi-news transition-colors flex items-center justify-center gap-3">Baca selengkapnya <FaArrowRight className="text-bwi-gold" /></Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section> */}
-
       <section className="py-24 relative z-10 border-t border-gray-200 bg-white">
         <div className="container mx-auto px-6 lg:px-16 flex flex-col xl:flex-row gap-16">
           <div className="w-full xl:w-2/3">
             <h3 className="text-3xl font-bold font-serif text-bwi-dark mb-8 uppercase border-l-4 border-bwi-gold pl-4">Berita Terkini</h3>
-            <div className="flex flex-col md:flex-row gap-8 mb-10 bg-bwi-bg p-5 rounded-3xl shadow-sm border border-gray-100 group cursor-pointer hover:shadow-lg transition-shadow">
-              <div className="w-full md:w-1/2 h-72 rounded-2xl overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=800&auto=format&fit=crop" alt="Musrenbang" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+
+            {featuredNews && (
+              <div className="flex flex-col md:flex-row gap-8 mb-10 bg-bwi-bg p-5 rounded-3xl shadow-sm border border-gray-100 group cursor-pointer hover:shadow-lg transition-shadow">
+                <div className="w-full md:w-1/2 h-72 rounded-2xl overflow-hidden">
+                  <img src={featuredNews.gambar || 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=800&auto=format&fit=crop'} alt={featuredNews.judul} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                </div>
+                <div className="w-full md:w-1/2 flex flex-col justify-center pr-4">
+                  <p className="text-bwi-gold text-sm font-bold mb-2 tracking-widest uppercase">{formatDate(featuredNews.tanggal)}</p>
+                  <h4 className="text-2xl font-bold text-bwi-dark mb-4 leading-snug group-hover:text-green-700 transition-colors line-clamp-2">{featuredNews.judul}</h4>
+                  <p className="text-gray-600 text-base mb-8 leading-relaxed line-clamp-3">{featuredNews.deskripsi}</p>
+                  <Link to="/berita" className="bg-bwi-dark text-white px-6 py-3.5 text-sm font-semibold rounded-lg hover:bg-bwi-news transition-colors flex items-center justify-between w-max gap-4">Baca selengkapnya <FaArrowRight className="text-bwi-gold" /></Link>
+                </div>
               </div>
-              <div className="w-full md:w-1/2 flex flex-col justify-center pr-4">
-                <p className="text-bwi-gold text-sm font-bold mb-2 tracking-widest uppercase">23 Juli 2026</p>
-                <h4 className="text-2xl font-bold text-bwi-dark mb-4 leading-snug group-hover:text-green-700 transition-colors">Musrenbang Kecamatan Banyuwangi Tahun 2026 Resmi Digelar.</h4>
-                <p className="text-gray-600 text-base mb-8 leading-relaxed line-clamp-3">Musrenbang tahun 2026 membahas rencana pembangunan prioritas yang akan dilaksanakan di Kecamatan Banyuwangi untuk meningkatkan kesejahteraan masyarakat secara menyeluruh.</p>
-                <Link to="/berita" className="bg-bwi-dark text-white px-6 py-3.5 text-sm font-semibold rounded-lg hover:bg-bwi-news transition-colors flex items-center justify-between w-max gap-4">Baca selengkapnya <FaArrowRight className="text-bwi-gold" /></Link>
-              </div>
-            </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Link to="/berita" className="flex gap-5 items-center bg-white p-4 rounded-2xl shadow-sm border border-gray-100 group cursor-pointer hover:shadow-md transition-shadow">
-                <div className="w-28 h-24 overflow-hidden rounded-xl shrink-0">
-                  <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=400&auto=format&fit=crop" alt="Berita 1" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                </div>
-                <div className="flex flex-col justify-center">
-                  <p className="text-gray-500 text-xs mb-1 font-semibold tracking-wide">13 Juli 2026</p>
-                  <h5 className="font-bold text-base text-bwi-dark leading-snug group-hover:text-green-700">Pelatihan Digital Marketing bagi seluruh UMKM.</h5>
-                </div>
-              </Link>
-              <Link to="/berita" className="flex gap-5 items-center bg-white p-4 rounded-2xl shadow-sm border border-gray-100 group cursor-pointer hover:shadow-md transition-shadow">
-                <div className="w-28 h-24 overflow-hidden rounded-xl shrink-0">
-                  <img src="https://images.unsplash.com/photo-1532375810709-75b1da00537c?q=80&w=400&auto=format&fit=crop" alt="Berita 2" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                </div>
-                <div className="flex flex-col justify-center">
-                  <p className="text-gray-500 text-xs mb-1 font-semibold tracking-wide">15 Juli 2026</p>
-                  <h5 className="font-bold text-base text-bwi-dark leading-snug group-hover:text-green-700">Upacara peringatan Hari Jadi Banyuwangi ke-272.</h5>
-                </div>
-              </Link>
+              {sideNews.map((news) => (
+                <Link key={news.id} to="/berita" className="flex gap-5 items-center bg-white p-4 rounded-2xl shadow-sm border border-gray-100 group cursor-pointer hover:shadow-md transition-shadow">
+                  <div className="w-28 h-24 overflow-hidden rounded-xl shrink-0">
+                    <img src={news.gambar || 'https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=400&auto=format&fit=crop'} alt={news.judul} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                  </div>
+                  <div className="flex flex-col justify-center">
+                    <p className="text-gray-500 text-xs mb-1 font-semibold tracking-wide">{formatDate(news.tanggal)}</p>
+                    <h5 className="font-bold text-base text-bwi-dark leading-snug group-hover:text-green-700 line-clamp-2">{news.judul}</h5>
+                  </div>
+                </Link>
+              ))}
             </div>
           </div>
 
           <div className="w-full xl:w-1/3">
             <h3 className="text-3xl font-bold font-serif text-bwi-dark mb-8 uppercase border-l-4 border-bwi-gold pl-4">Agenda Kegiatan</h3>
             <div className="flex flex-col gap-4">
-              {[
-                { tgl: "26", bln: "JUL", title: "Rapat Koordinasi Kecamatan", time: "08.00-10.00 WIB", loc: "Aula Kecamatan" },
-                { tgl: "27", bln: "JUL", title: "Rapat Koordinasi Kecamatan", time: "08.30-12.00 WIB", loc: "Kelurahan Kepatihan" },
-                { tgl: "30", bln: "JUL", title: "Rapat Koordinasi Kecamatan", time: "19.00-Selesai", loc: "Aula Kecamatan" },
-                { tgl: "30", bln: "JUL", title: "Rapat Koordinasi Kecamatan", time: "19.00-Selesai", loc: "Aula Kecamatan" },
-              ].map((agenda, index) => (
-                <div key={index} className="flex gap-5 items-center bg-bwi-bg p-5 rounded-2xl shadow-sm border border-gray-50 hover:-translate-y-1 transition-transform">
-                  <div className="bg-bwi-dark text-bwi-gold w-16 h-16 rounded-xl flex flex-col items-center justify-center font-bold shrink-0 shadow-inner">
-                    <span className="text-2xl leading-none">{agenda.tgl}</span>
-                    <span className="text-[11px] uppercase tracking-widest mt-1">{agenda.bln}</span>
+              {displayAgenda.map((agenda, index) => {
+                const dateInfo = parseAgendaDate(agenda);
+                return (
+                  <div key={agenda.id || index} className="flex gap-5 items-center bg-bwi-bg p-5 rounded-2xl shadow-sm border border-gray-50 hover:-translate-y-1 transition-transform">
+                    <div className="bg-bwi-dark text-bwi-gold w-16 h-16 rounded-xl flex flex-col items-center justify-center font-bold shrink-0 shadow-inner">
+                      <span className="text-2xl leading-none">{dateInfo.tgl}</span>
+                      <span className="text-[11px] uppercase tracking-widest mt-1">{dateInfo.bln}</span>
+                    </div>
+                    <div>
+                      <h5 className="font-bold text-base text-bwi-dark mb-1 line-clamp-1">{agenda.judul}</h5>
+                      <p className="text-gray-600 text-xs mt-1 font-medium">{agenda.waktu || '08.00-Selesai'} | {agenda.lokasi || 'Kecamatan Banyuwangi'}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h5 className="font-bold text-base text-bwi-dark mb-1">{agenda.title}</h5>
-                    <p className="text-gray-600 text-xs mt-1 font-medium">{agenda.time} | {agenda.loc}</p>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <Link to="/berita" className="w-full mt-6 py-4 border-2 border-bwi-dark text-bwi-dark font-bold text-sm rounded-xl hover:bg-bwi-dark hover:text-white transition-colors block text-center">Lihat Semua Agenda</Link>
           </div>

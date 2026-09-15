@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaPlus, FaSearch, FaEdit, FaTrashAlt, FaClock, FaMapMarkerAlt } from 'react-icons/fa';
 import { dummyNews } from '../../data/dummyData';
+import { socket } from '../../socket';
 
 const ManageInformasi = () => {
   const [dataBerita, setDataBerita] = useState(dummyNews);
@@ -19,7 +20,30 @@ const ManageInformasi = () => {
       .catch((err) => {
         console.error('Error fetching berita in Admin:', err);
       });
+
+    const handleBeritaCreated = (item) => {
+      setDataBerita((prev) => [item, ...prev.filter((b) => b.id !== item.id)]);
+    };
+
+    const handleBeritaUpdated = (item) => {
+      setDataBerita((prev) => prev.map((b) => (b.id === item.id ? item : b)));
+    };
+
+    const handleBeritaDeleted = ({ id }) => {
+      setDataBerita((prev) => prev.filter((b) => b.id !== id));
+    };
+
+    socket.on('berita:created', handleBeritaCreated);
+    socket.on('berita:updated', handleBeritaUpdated);
+    socket.on('berita:deleted', handleBeritaDeleted);
+
+    return () => {
+      socket.off('berita:created', handleBeritaCreated);
+      socket.off('berita:updated', handleBeritaUpdated);
+      socket.off('berita:deleted', handleBeritaDeleted);
+    };
   }, []);
+
 
   const filteredData = dataBerita.filter((item) => {
     const matchCategory =

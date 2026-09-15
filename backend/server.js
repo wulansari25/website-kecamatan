@@ -1,9 +1,11 @@
 import express from 'express';
+import http from 'http';
 import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { getDb } from './config/db.js';
+import { initSocket } from './socket.js';
 import beritaRoutes from './routes/beritaRoutes.js';
 import agendaRoutes from './routes/agendaRoutes.js';
 import { initNewsCron } from './cron/newsCron.js';
@@ -47,6 +49,10 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+// Create HTTP Server & Initialize Socket.io
+const httpServer = http.createServer(app);
+initSocket(httpServer);
+
 // Start Server
 async function startServer() {
   try {
@@ -56,8 +62,9 @@ async function startServer() {
     // Inisialisasi Penjadwal Cron Job (setiap jam 12:00 & 00:00)
     initNewsCron();
 
-    app.listen(PORT, () => {
+    httpServer.listen(PORT, () => {
       console.log(`🚀 Server Backend Berita berjalan di: http://localhost:${PORT}`);
+      console.log(`⚡ Socket.io Server siap menerima koneksi real-time`);
       console.log(`📌 Endpoint GET Berita:  http://localhost:${PORT}/api/berita`);
       console.log(`📌 Endpoint POST Berita: http://localhost:${PORT}/api/berita`);
       console.log(`📌 Endpoint GET Agenda:  http://localhost:${PORT}/api/agenda`);
@@ -71,3 +78,4 @@ async function startServer() {
 }
 
 startServer();
+

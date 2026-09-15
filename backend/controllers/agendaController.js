@@ -1,4 +1,5 @@
 import { getDb } from '../config/db.js';
+import { getIO } from '../socket.js';
 
 /**
  * GET /api/agenda
@@ -100,6 +101,23 @@ export async function createAgenda(req, res) {
     const newAgenda = await db.get(`SELECT * FROM agenda WHERE id = ?`, [result.lastID]);
     console.log('✅ Agenda baru berhasil disimpan ke SQLite with ID:', result.lastID);
 
+    try {
+      const io = getIO();
+      if (io) {
+        io.emit('agenda:created', newAgenda);
+        io.emit('notification:new', {
+          id: `agenda-${newAgenda.id}-${Date.now()}`,
+          type: 'agenda',
+          title: newAgenda.judul,
+          category: 'Agenda Terdekat',
+          timestamp: newAgenda.tanggal || new Date().toISOString(),
+          data: newAgenda
+        });
+      }
+    } catch (socketErr) {
+      console.error('⚠️ Error emitting socket agenda:created:', socketErr);
+    }
+
     return res.status(201).json({
       status: 'success',
       message: 'Agenda baru berhasil ditambahkan.',
@@ -161,6 +179,15 @@ export async function updateAgenda(req, res) {
     const updatedAgenda = await db.get(`SELECT * FROM agenda WHERE id = ?`, [id]);
     console.log(`✅ Agenda ID ${id} berhasil diperbarui di SQLite`);
 
+    try {
+      const io = getIO();
+      if (io) {
+        io.emit('agenda:updated', updatedAgenda);
+      }
+    } catch (socketErr) {
+      console.error('⚠️ Error emitting socket agenda:updated:', socketErr);
+    }
+
     return res.status(200).json({
       status: 'success',
       message: 'Agenda berhasil diperbarui.',
@@ -194,6 +221,15 @@ export async function deleteAgenda(req, res) {
 
     await db.run(`DELETE FROM agenda WHERE id = ?`, [id]);
     console.log(`✅ Agenda ID ${id} berhasil dihapus dari SQLite`);
+
+    try {
+      const io = getIO();
+      if (io) {
+        io.emit('agenda:deleted', { id: Number(id) });
+      }
+    } catch (socketErr) {
+      console.error('⚠️ Error emitting socket agenda:deleted:', socketErr);
+    }
 
     return res.status(200).json({
       status: 'success',

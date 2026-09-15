@@ -1,9 +1,72 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaRegNewspaper, FaHeart, FaWater, FaUsers, FaClock, FaCheckCircle, FaEye } from 'react-icons/fa';
+import { FaRegNewspaper, FaUsers } from 'react-icons/fa';
 import kantorCamatBg from '../../assets/images/kantor-camat.png';
+import { socket } from '../../socket';
+
+
+const defaultRecent = [
+  { id: 1, title: "Musrenbang Kecamatan Banyuwangi Tahun 2026", cat: "Kegiatan", img: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=200&auto=format&fit=crop&sig=1" },
+  { id: 2, title: "Jadwal Perekaman KTP Keliling Bulan Ini", cat: "Agenda", img: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=200&auto=format&fit=crop&sig=2" }, 
+  { id: 3, title: "Pelatihan Digital Marketing bagi Pelaku UMKM", cat: "UMKM", img: "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=200&auto=format&fit=crop&sig=3" }
+];
 
 const Dashboard = () => {
+  const [totalPublikasi, setTotalPublikasi] = useState(36);
+  const [recentList, setRecentList] = useState(defaultRecent);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/berita')
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.status === 'success' && Array.isArray(json.data)) {
+          setTotalPublikasi(json.data.length > 0 ? json.data.length : 36);
+          if (json.data.length > 0) {
+            const formatted = json.data.slice(0, 5).map((item, idx) => ({
+              id: item.id,
+              title: item.judul,
+              cat: item.kategori || 'Kegiatan',
+              img: item.gambar || `https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=200&auto=format&fit=crop&sig=${idx}`
+            }));
+            setRecentList(formatted);
+          }
+        }
+      })
+      .catch((err) => console.error('Error fetching berita on Dashboard:', err));
+
+    const handleBeritaCreated = (item) => {
+      setTotalPublikasi((prev) => prev + 1);
+      const newRecentItem = {
+        id: item.id,
+        title: item.judul,
+        cat: item.kategori || 'Kegiatan',
+        img: item.gambar || 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=200&auto=format&fit=crop'
+      };
+      setRecentList((prev) => [newRecentItem, ...prev.filter((r) => r.id !== item.id)].slice(0, 5));
+    };
+
+    const handleBeritaUpdated = (item) => {
+      setRecentList((prev) =>
+        prev.map((r) => (r.id === item.id ? { ...r, title: item.judul, cat: item.kategori || r.cat, img: item.gambar || r.img } : r))
+      );
+    };
+
+    const handleBeritaDeleted = ({ id }) => {
+      setTotalPublikasi((prev) => Math.max(0, prev - 1));
+      setRecentList((prev) => prev.filter((r) => r.id !== id));
+    };
+
+    socket.on('berita:created', handleBeritaCreated);
+    socket.on('berita:updated', handleBeritaUpdated);
+    socket.on('berita:deleted', handleBeritaDeleted);
+
+    return () => {
+      socket.off('berita:created', handleBeritaCreated);
+      socket.off('berita:updated', handleBeritaUpdated);
+      socket.off('berita:deleted', handleBeritaDeleted);
+    };
+  }, []);
+
   return (
     <div className="w-full bg-[#f8f9fa] min-h-full">
       <div className="bg-[#f0f5ee] rounded-2xl p-8 mb-8 flex flex-col md:flex-row justify-between items-center shadow-sm border border-green-100 overflow-hidden relative">
@@ -21,9 +84,7 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {[
-          { title: "Total Publikasi", count: 36, active: "Berita & Pengumuman", action: "+ Tambah Publikasi", link: "/admin/berita/tambah", icon: <FaRegNewspaper />, color: "text-blue-600" },
-          /* { title: "Antrean E-Sakinah", count: 4, active: "Perlu Verifikasi", action: "Lihat Berkas", link: "/admin/esakinah", icon: <FaHeart />, color: "text-pink-600" }, */
-          /* { title: "Reservasi KISS", count: 2, active: "Menunggu Konfirmasi", action: "Kelola Jadwal", link: "/admin/kiss", icon: <FaWater />, color: "text-cyan-600" }, */
+          { title: "Total Publikasi", count: totalPublikasi, active: "Berita & Pengumuman", action: "+ Tambah Publikasi", link: "/admin/berita/tambah", icon: <FaRegNewspaper />, color: "text-blue-600" },
           { title: "Pegawai Aktif", count: 18, active: "Struktur Organisasi", action: "Kelola Pegawai", link: "/admin/struktur", icon: <FaUsers />, color: "text-orange-600" },
         ].map((stat, idx) => (
           <div key={idx} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col justify-between">
@@ -50,14 +111,10 @@ const Dashboard = () => {
             <Link to="/admin/berita" className="text-[10px] font-semibold text-[#107058] hover:underline">Lihat Semua</Link>
           </div>
           <div className="space-y-4">
-            {[
-              { title: "Musrenbang Kecamatan Banyuwangi Tahun 2026", cat: "Kegiatan" },
-              { title: "Jadwal Perekaman KTP Keliling Bulan Ini", cat: "Agenda" }, 
-              { title: "Pelatihan Digital Marketing bagi Pelaku UMKM", cat: "UMKM" }
-            ].map((item, i) => (
-              <div key={i} className="flex gap-3 items-center border-b border-gray-50 pb-3">
+            {recentList.map((item, i) => (
+              <div key={item.id || i} className="flex gap-3 items-center border-b border-gray-50 pb-3">
                 <div className="w-14 h-12 bg-gray-200 rounded-lg overflow-hidden shrink-0">
-                  <img src={`https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=200&auto=format&fit=crop&sig=${i}`} className="w-full h-full object-cover" alt="Thumb" />
+                  <img src={item.img} className="w-full h-full object-cover" alt="Thumb" />
                 </div>
                 <div className="flex-1">
                   <h4 className="text-xs font-bold text-gray-800 leading-tight mb-1 line-clamp-2">{item.title}</h4>
@@ -67,6 +124,7 @@ const Dashboard = () => {
             ))}
           </div>
         </div>
+
 
         {/* <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 lg:col-span-2">
           <div className="flex justify-between items-center mb-6 border-b border-gray-100 pb-2">

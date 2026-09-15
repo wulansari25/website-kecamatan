@@ -1,5 +1,6 @@
 import { getDb } from '../config/db.js';
 import { scrapeDetikBanyuwangi } from '../services/rssScraper.js';
+import { getIO } from '../socket.js';
 
 /**
  * GET /api/berita
@@ -100,6 +101,23 @@ export async function createBeritaManual(req, res) {
     const newBerita = await db.get(`SELECT * FROM berita WHERE id = ?`, [result.lastID]);
     console.log('✅ Berita manual berhasil disimpan ke SQLite with ID:', result.lastID);
 
+    try {
+      const io = getIO();
+      if (io) {
+        io.emit('berita:created', newBerita);
+        io.emit('notification:new', {
+          id: `berita-${newBerita.id}-${Date.now()}`,
+          type: 'berita',
+          title: newBerita.judul,
+          category: newBerita.kategori || 'Kegiatan',
+          timestamp: newBerita.tanggal || new Date().toISOString(),
+          data: newBerita
+        });
+      }
+    } catch (socketErr) {
+      console.error('⚠️ Error emitting socket berita:created:', socketErr);
+    }
+
     return res.status(201).json({
       status: 'success',
       message: 'Berita manual berhasil ditambahkan.',
@@ -157,6 +175,15 @@ export async function updateBerita(req, res) {
     const updatedBerita = await db.get(`SELECT * FROM berita WHERE id = ?`, [id]);
     console.log(`✅ Berita ID ${id} berhasil diperbarui di SQLite`);
 
+    try {
+      const io = getIO();
+      if (io) {
+        io.emit('berita:updated', updatedBerita);
+      }
+    } catch (socketErr) {
+      console.error('⚠️ Error emitting socket berita:updated:', socketErr);
+    }
+
     return res.status(200).json({
       status: 'success',
       message: 'Berita berhasil diperbarui.',
@@ -190,6 +217,15 @@ export async function deleteBerita(req, res) {
 
     await db.run(`DELETE FROM berita WHERE id = ?`, [id]);
     console.log(`✅ Berita ID ${id} berhasil dihapus dari SQLite`);
+
+    try {
+      const io = getIO();
+      if (io) {
+        io.emit('berita:deleted', { id: Number(id) });
+      }
+    } catch (socketErr) {
+      console.error('⚠️ Error emitting socket berita:deleted:', socketErr);
+    }
 
     return res.status(200).json({
       status: 'success',
