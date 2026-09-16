@@ -1,4 +1,4 @@
-import { getDb } from './config/db.js';
+import { getDb } from '../config/db.js';
 
 export async function runSeeder() {
   console.log('🌱 Memulai proses seeding database MySQL...');

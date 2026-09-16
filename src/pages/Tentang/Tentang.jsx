@@ -67,21 +67,7 @@ const Tentang = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mt-16">
-            {[
-              { year: '1771', text: 'Wilayah Banyuwangi menjadi bagian dari Kerajaan Blambangan.' },
-              { year: '1945', text: 'Pembentukan Kabupaten Banyuwangi dan penetapan pusat pemerintahan.' },
-              { year: '1965', text: 'Perkembangan wilayah Administrasi Kabupaten Banyuwangi.' },
-              { year: '2010', text: 'Peningkatan pelayanan publik berbasis teknologi informasi.' },
-              /* { year: '2024', text: 'Inovasi layanan digital melalui SMILE, KISS, dan E-Sakinah.' } */
-            ].map((item, index) => (
-              <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative">
-                 <div className="w-4 h-4 rounded-full bg-bwi-gold absolute -top-2 left-6 ring-4 ring-white"></div>
-                 <h4 className="text-3xl font-bold text-bwi-dark mb-3 mt-2">{item.year}</h4>
-                 <p className="text-sm text-gray-600 leading-relaxed">{item.text}</p>
-              </div>
-            ))}
-          </div>
+
         </section>
 
         <section>

@@ -33,9 +33,16 @@ export async function getAllBerita(req, res) {
  */
 export async function getBeritaById(req, res) {
   try {
-    const { id } = req.params;
+    const rawId = req.params.id;
     const db = await getDb();
-    const berita = await db.get(`SELECT * FROM berita WHERE id = ?`, [id]);
+
+    const parsedNum = parseInt(rawId.toString().replace(/\D/g, ''), 10);
+    const searchId = !isNaN(parsedNum) ? parsedNum : rawId;
+
+    let berita = await db.get(`SELECT * FROM berita WHERE id = ?`, [searchId]);
+    if (!berita && searchId !== rawId) {
+      berita = await db.get(`SELECT * FROM berita WHERE id = ?`, [rawId]);
+    }
 
     if (!berita) {
       return res.status(404).json({
@@ -99,7 +106,7 @@ export async function createBeritaManual(req, res) {
     );
 
     const newBerita = await db.get(`SELECT * FROM berita WHERE id = ?`, [result.lastID]);
-    console.log('✅ Berita manual berhasil disimpan ke SQLite with ID:', result.lastID);
+    console.log('✅ Berita manual berhasil disimpan ke MySQL with ID:', result.lastID);
 
     try {
       const io = getIO();
@@ -138,10 +145,10 @@ export async function createBeritaManual(req, res) {
  */
 export async function updateBerita(req, res) {
   try {
-    const { id } = req.params;
+    const rawId = req.params.id;
     const { judul, deskripsi, gambar, kategori, tanggal, sumber } = req.body;
 
-    console.log(`📥 Received PUT /api/berita/${id}:`, {
+    console.log(`📥 Received PUT /api/berita/${rawId}:`, {
       judul,
       kategori,
       tanggal,
@@ -149,7 +156,13 @@ export async function updateBerita(req, res) {
     });
 
     const db = await getDb();
-    const existing = await db.get(`SELECT * FROM berita WHERE id = ?`, [id]);
+    const parsedNum = parseInt(rawId.toString().replace(/\D/g, ''), 10);
+    const searchId = !isNaN(parsedNum) ? parsedNum : rawId;
+
+    let existing = await db.get(`SELECT * FROM berita WHERE id = ?`, [searchId]);
+    if (!existing && searchId !== rawId) {
+      existing = await db.get(`SELECT * FROM berita WHERE id = ?`, [rawId]);
+    }
 
     if (!existing) {
       return res.status(404).json({
@@ -157,6 +170,8 @@ export async function updateBerita(req, res) {
         message: 'Berita tidak ditemukan.'
       });
     }
+
+    const targetId = existing.id;
 
     const updatedJudul = judul !== undefined ? judul.trim() : existing.judul;
     const updatedDeskripsi = deskripsi !== undefined ? deskripsi.trim() : existing.deskripsi;
@@ -169,11 +184,11 @@ export async function updateBerita(req, res) {
       `UPDATE berita 
        SET judul = ?, deskripsi = ?, gambar = ?, kategori = ?, tanggal = ?, sumber = ?
        WHERE id = ?`,
-      [updatedJudul, updatedDeskripsi, updatedGambar, updatedKategori, updatedTanggal, updatedSumber, id]
+      [updatedJudul, updatedDeskripsi, updatedGambar, updatedKategori, updatedTanggal, updatedSumber, targetId]
     );
 
-    const updatedBerita = await db.get(`SELECT * FROM berita WHERE id = ?`, [id]);
-    console.log(`✅ Berita ID ${id} berhasil diperbarui di SQLite`);
+    const updatedBerita = await db.get(`SELECT * FROM berita WHERE id = ?`, [targetId]);
+    console.log(`✅ Berita ID ${targetId} berhasil diperbarui di MySQL`);
 
     try {
       const io = getIO();
@@ -204,10 +219,17 @@ export async function updateBerita(req, res) {
  */
 export async function deleteBerita(req, res) {
   try {
-    const { id } = req.params;
+    const rawId = req.params.id;
     const db = await getDb();
 
-    const existing = await db.get(`SELECT * FROM berita WHERE id = ?`, [id]);
+    const parsedNum = parseInt(rawId.toString().replace(/\D/g, ''), 10);
+    const searchId = !isNaN(parsedNum) ? parsedNum : rawId;
+
+    let existing = await db.get(`SELECT * FROM berita WHERE id = ?`, [searchId]);
+    if (!existing && searchId !== rawId) {
+      existing = await db.get(`SELECT * FROM berita WHERE id = ?`, [rawId]);
+    }
+
     if (!existing) {
       return res.status(404).json({
         status: 'fail',
@@ -215,13 +237,15 @@ export async function deleteBerita(req, res) {
       });
     }
 
-    await db.run(`DELETE FROM berita WHERE id = ?`, [id]);
-    console.log(`✅ Berita ID ${id} berhasil dihapus dari SQLite`);
+    const targetId = existing.id;
+
+    await db.run(`DELETE FROM berita WHERE id = ?`, [targetId]);
+    console.log(`✅ Berita ID ${targetId} berhasil dihapus dari MySQL`);
 
     try {
       const io = getIO();
       if (io) {
-        io.emit('berita:deleted', { id: Number(id) });
+        io.emit('berita:deleted', { id: Number(targetId) });
       }
     } catch (socketErr) {
       console.error('⚠️ Error emitting socket berita:deleted:', socketErr);

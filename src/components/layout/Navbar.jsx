@@ -63,6 +63,21 @@ const Navbar = () => {
         <nav className="flex space-x-6 md:space-x-8 font-medium text-sm items-center drop-shadow-md">
           <Link to="/" className="hover:text-bwi-gold transition-colors">Beranda</Link>
           <Link to="/profil" className="hover:text-bwi-gold transition-colors">Profil</Link>
+
+          {/* Menu Inovasi */}
+          <div className="relative group">
+            <Link to="/inovasi/kiss" className="hover:text-bwi-gold transition-colors flex items-center gap-1 py-1">
+              Inovasi <span className="text-[10px]">▾</span>
+            </Link>
+            <div className="absolute left-0 top-full mt-1 w-44 bg-white text-gray-800 rounded-xl shadow-xl border border-gray-100 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-200 z-50 overflow-hidden py-1">
+              <Link to="/inovasi/kiss" className="block px-4 py-2 text-xs font-semibold hover:bg-emerald-50 hover:text-[#107058] transition-colors">
+                KISS
+              </Link>
+              {/* <Link to="/inovasi/smile" className="block px-4 py-2 text-xs font-semibold hover:bg-emerald-50 hover:text-[#107058] transition-colors">SMILE</Link> */}
+              {/* <Link to="/inovasi/e-sakinah" className="block px-4 py-2 text-xs font-semibold hover:bg-emerald-50 hover:text-[#107058] transition-colors">E-Sakinah</Link> */}
+            </div>
+          </div>
+
           <Link to="/berita" className="hover:text-bwi-gold transition-colors">Informasi</Link>
           <a href="https://wa.me/6287865500022" target="_blank" rel="noopener noreferrer" className="hover:text-bwi-gold transition-colors hidden sm:inline">Kontak Kami</a>
 
