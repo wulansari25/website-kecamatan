@@ -1,109 +1,136 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaArrowLeft, FaEye, FaSearch } from 'react-icons/fa';
+import { FaSearch, FaEye, FaTrashAlt, FaCheckCircle, FaClock, FaExclamationTriangle } from 'react-icons/fa';
 
 const ManageESakinah = () => {
-  const [activeTab, setActiveTab] = useState('Semua');
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const tabs = ['Semua', 'Menunggu Verifikasi', 'Diproses', 'Selesai', 'Ditolak'];
-
-  const data = [
-    { id: 1, p1: "Muhammad", p2: "Kurniawati", tgl: "28 Juli 2026", status: "Menunggu Verifikasi", badge: "bg-orange-50 text-orange-600 border-orange-200" },
-    { id: 2, p1: "Saifuddin", p2: "Novianti", tgl: "27 Juli 2026", status: "Menunggu Verifikasi", badge: "bg-orange-50 text-orange-600 border-orange-200" },
-    { id: 3, p1: "Ricky Harun", p2: "Dini Kurnia", tgl: "25 Juli 2026", status: "Diproses", badge: "bg-blue-50 text-blue-600 border-blue-200" },
+  const dummyPengajuan = [
+    {
+      id: 1,
+      namaPemohon: "Muhammad",
+      namaPasangan: "Kurniawati",
+      wa: "085899966146",
+      tanggal: "22 Agt 2026",
+      status: "Menunggu Verifikasi"
+    },
+    {
+      id: 2,
+      namaPemohon: "Budi Santoso",
+      namaPasangan: "Siti Aminah",
+      wa: "081234567890",
+      tanggal: "20 Agt 2026",
+      status: "Disetujui"
+    },
+    {
+      id: 3,
+      namaPemohon: "Andi Saputra",
+      namaPasangan: "Rina Melati",
+      wa: "085678901234",
+      tanggal: "18 Agt 2026",
+      status: "Perlu Perbaikan"
+    }
   ];
 
-  const filteredData = data.filter((item) => {
-    const matchesTab = activeTab === 'Semua' || item.status === activeTab;
-    const matchesSearch = item.p1.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          item.p2.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesTab && matchesSearch;
-  });
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case 'Menunggu Verifikasi':
+        return <span className="bg-orange-50 text-orange-600 border border-orange-200 px-3 py-1.5 rounded-md text-[11px] font-bold flex items-center gap-1.5 w-max"><FaClock /> {status}</span>;
+      case 'Disetujui':
+        return <span className="bg-green-50 text-green-600 border border-green-200 px-3 py-1.5 rounded-md text-[11px] font-bold flex items-center gap-1.5 w-max"><FaCheckCircle /> {status}</span>;
+      case 'Perlu Perbaikan':
+        return <span className="bg-red-50 text-red-600 border border-red-200 px-3 py-1.5 rounded-md text-[11px] font-bold flex items-center gap-1.5 w-max"><FaExclamationTriangle /> {status}</span>;
+      default:
+        return <span className="bg-gray-50 text-gray-600 border border-gray-200 px-3 py-1.5 rounded-md text-[11px] font-bold">{status}</span>;
+    }
+  };
 
   return (
     <div className="w-full bg-[#f8f9fa] min-h-full">
-      <div className="flex items-center gap-3 mb-8">
-        <Link to="/admin" className="text-[#107058] hover:text-[#0a5240] transition-colors">
-          <FaArrowLeft />
-        </Link>
-        <h1 className="text-xl font-bold text-gray-800">Pengajuan E-Sakinah</h1>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-bwi-dark">Layanan Interaktif – Verifikasi e-Sakinah</h1>
+        <p className="text-sm text-gray-500 mt-1">Kelola dan verifikasi antrean pengajuan dispensasi nikah masyarakat.</p>
       </div>
 
-      <div className="bg-[#FAF4EB] rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-200 px-6 pt-4 gap-4">
-          <div className="flex gap-8 overflow-x-auto w-full md:w-auto">
-            {tabs.map((tab) => (
-              <button 
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`pb-4 text-sm font-bold whitespace-nowrap transition-colors ${
-                  activeTab === tab 
-                    ? 'text-gray-900 border-b-2 border-[#107058]' 
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
-
-          <div className="relative w-full md:w-64 pb-3 md:pb-0">
-            <FaSearch className="absolute left-3 top-2.5 text-gray-400 text-xs" />
-            <input 
-              type="text" 
-              placeholder="Cari pemohon / pasangan..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full border border-gray-200 text-xs rounded-lg pl-8 pr-3 py-1.5 bg-white focus:outline-none focus:border-[#107058]"
-            />
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        
+        <div className="flex flex-col md:flex-row gap-4 mb-6">
+          <select className="border border-gray-200 text-sm rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:border-[#107058]">
+            <option>Semua Status</option>
+            <option>Menunggu Verifikasi</option>
+            <option>Disetujui</option>
+            <option>Perlu Perbaikan</option>
+          </select>
+          <div className="relative flex-1 md:max-w-xs">
+            <FaSearch className="absolute left-3 top-3 text-gray-400" />
+            <input type="text" placeholder="Cari nama pemohon atau pasangan..." className="w-full border border-gray-200 text-sm rounded-lg pl-9 pr-4 py-2 bg-gray-50 focus:outline-none focus:border-[#107058]" />
           </div>
         </div>
 
-        <div className="p-6 overflow-x-auto">
-          <table className="w-full text-left border-collapse bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse min-w-[900px]">
             <thead>
-              <tr className="bg-[#e4e1db] text-xs text-gray-700 uppercase tracking-wider">
-                <th className="py-4 px-6 font-bold w-1/4">Pemohon</th>
-                <th className="py-4 px-6 font-bold w-1/4">Pasangan</th>
-                <th className="py-4 px-6 font-bold">Tanggal</th>
-                <th className="py-4 px-6 font-bold">Status</th>
-                <th className="py-4 px-6 font-bold text-center">Aksi</th>
+              <tr className="bg-gray-50 border-y border-gray-200 text-[11px] text-gray-500 uppercase tracking-wider">
+                <th className="py-4 px-4 font-bold w-12 text-center">No</th>
+                <th className="py-4 px-4 font-bold">Data Pasangan (Pemohon & Calon)</th>
+                <th className="py-4 px-4 font-bold">No. WhatsApp</th>
+                <th className="py-4 px-4 font-bold">Tanggal Masuk</th>
+                <th className="py-4 px-4 font-bold">Status Berkas</th>
+                <th className="py-4 px-4 font-bold text-center">Aksi</th>
               </tr>
             </thead>
-            <tbody className="text-sm text-gray-700 font-semibold">
-              {filteredData.length > 0 ? (
-                filteredData.map((row) => (
-                  <tr key={row.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                    <td className="py-4 px-6 text-gray-900">{row.p1}</td>
-                    <td className="py-4 px-6">{row.p2}</td>
-                    <td className="py-4 px-6">{row.tgl}</td>
-                    <td className="py-4 px-6">
-                      <span className={`px-3 py-1.5 rounded-md text-[10px] font-bold border ${row.badge}`}>
-                        {row.status}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6 text-center">
+            <tbody className="text-sm text-gray-700">
+              {dummyPengajuan.map((item, index) => (
+                <tr key={item.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                  <td className="py-4 px-4 text-center font-semibold text-gray-500">{index + 1}</td>
+                  
+                  <td className="py-4 px-4">
+                    <p className="font-bold text-gray-900">{item.namaPemohon}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">&amp; {item.namaPasangan}</p>
+                  </td>
+                  
+                  <td className="py-4 px-4 font-medium text-gray-600">
+                    <a href={`https://wa.me/62${item.wa.substring(1)}`} target="_blank" rel="noopener noreferrer" className="hover:text-green-600 transition-colors">
+                      {item.wa}
+                    </a>
+                  </td>
+                  
+                  <td className="py-4 px-4 font-medium text-gray-600">{item.tanggal}</td>
+                  
+                  <td className="py-4 px-4">
+                    {getStatusBadge(item.status)}
+                  </td>
+                  
+                  <td className="py-4 px-4">
+                    <div className="flex justify-center gap-2">
                       <Link 
-                        to={`/admin/esakinah/detail/${row.id}`} 
-                        className="inline-flex items-center justify-center text-gray-600 hover:text-[#107058] hover:bg-green-50 p-2 rounded-full transition-colors text-lg"
-                        title="Lihat Detail Pemohon"
+                        to={`/admin/esakinah/detail/${item.id}`} 
+                        className="flex items-center gap-2 bg-[#107058] text-white hover:bg-[#0a5240] px-3 py-1.5 rounded-lg transition-colors text-xs font-bold"
+                        title="Lihat Detail Berkas"
                       >
-                        <FaEye />
+                        <FaEye /> Cek Berkas
                       </Link>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="5" className="py-8 text-center text-gray-400 font-normal text-sm">
-                    Tidak ada data pengajuan yang ditemukan.
+
+                      <button className="text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors border border-transparent hover:border-red-200" title="Hapus Data">
+                        <FaTrashAlt />
+                      </button>
+                    </div>
                   </td>
                 </tr>
-              )}
+              ))}
             </tbody>
           </table>
         </div>
+        
+        <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-100 text-xs text-gray-500">
+          <p>Menampilkan 1-3 dari 45 pengajuan</p>
+          <div className="flex gap-1">
+            <button className="px-3 py-1.5 border border-gray-200 rounded-md hover:bg-gray-50 font-medium">Sebelumnya</button>
+            <button className="px-3 py-1.5 border border-[#107058] bg-[#107058] text-white rounded-md font-bold">1</button>
+            <button className="px-3 py-1.5 border border-gray-200 rounded-md hover:bg-gray-50 font-medium">2</button>
+            <button className="px-3 py-1.5 border border-gray-200 rounded-md hover:bg-gray-50 font-medium">3</button>
+            <button className="px-3 py-1.5 border border-gray-200 rounded-md hover:bg-gray-50 font-medium">Selanjutnya</button>
+          </div>
+        </div>
+
       </div>
     </div>
   );
