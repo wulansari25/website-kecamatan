@@ -10,6 +10,7 @@ import imgTenis from '../../assets/images/lomba-tenis.jpeg';
 import imgCamat from '../../assets/images/bapak-camat.JPG';
 import imgKelereng2 from '../../assets/images/kelereng2.JPG';
 import imgCamatLurah from '../../assets/images/camat-lurah.jpeg';
+import fotoCamat from '../../assets/images/foto-camat.jpeg';
 import { socket } from '../../socket';
 
 
@@ -266,9 +267,7 @@ const Home = () => {
               <video
                 src={profilVideo}
                 className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity duration-500"
-                autoPlay
                 loop
-                muted
                 playsInline
                 controls
               ></video>
@@ -280,7 +279,7 @@ const Home = () => {
           <div className="container mx-auto px-6 lg:px-16 flex flex-col md:flex-row items-center gap-12 lg:gap-20">
             <div className="w-56 lg:w-64 h-72 lg:h-80 rounded-2xl overflow-hidden shadow-2xl shrink-0 border-[6px] border-white relative">
               <div className="absolute inset-0 ring-1 ring-black/5 z-10 rounded-xl pointer-events-none"></div>
-              <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=600&auto=format&fit=crop" alt="Camat Banyuwangi" className="w-full h-full object-cover object-top" />
+              <img src={fotoCamat} alt="Camat Banyuwangi" className="w-full h-full object-cover object-top" />
             </div>
             <div>
               <h3 className="text-2xl lg:text-3xl font-bold text-bwi-gold mb-6 uppercase tracking-wide">Camat Banyuwangi</h3>
